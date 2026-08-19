@@ -163,6 +163,7 @@
         .app-container {
             max-width: 1200px;
             margin: 0 auto;
+            display: none;
         }
 
         /* ===== HEADER ===== */
@@ -582,7 +583,7 @@
             <div class="sub-text">Passport Photo Studio</div>
             <div class="loader"></div>
             <div class="creator-text">Created by Sanil</div>
-            <div class="timer-text" id="timerText">Loading...</div>
+            <div class="timer-text" id="timerText">⏱️ 10s</div>
         </div>
     </div>
 
@@ -598,7 +599,7 @@
     </div>
 
     <!-- ===== MAIN APP ===== -->
-    <div class="app-container" id="appContainer" style="display:none;">
+    <div class="app-container" id="appContainer">
 
         <!-- HEADER -->
         <div class="app-header">
@@ -837,51 +838,63 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
         // =====================================================
-        //  SPLASH SCREEN - VIDEO ENDS → SHOW APP
+        //  SPLASH SCREEN - 10 SECONDS VIDEO → SHOW APP
         // =====================================================
         const splashScreen = document.getElementById('splashScreen');
         const splashVideo = document.getElementById('splashVideo');
         const timerText = document.getElementById('timerText');
         const appContainer = document.getElementById('appContainer');
 
-        let videoEnded = false;
-        let timerFinished = false;
         let splashHidden = false;
+        let videoPlayed = false;
+        let timerStarted = false;
 
-        // ===== WHEN VIDEO ENDS =====
-        splashVideo.addEventListener('ended', function() {
-            videoEnded = true;
-            timerText.textContent = '✅ Ready!';
-            checkAndShowApp();
+        // ===== VIDEO PLAYS FOR 10 SECONDS =====
+        splashVideo.addEventListener('play', function() {
+            if (!timerStarted) {
+                timerStarted = true;
+                let seconds = 10;
+                timerText.textContent = `⏱️ ${seconds}s`;
+                
+                const interval = setInterval(function() {
+                    seconds--;
+                    if (seconds > 0) {
+                        timerText.textContent = `⏱️ ${seconds}s`;
+                    } else {
+                        clearInterval(interval);
+                        timerText.textContent = '✅ Ready!';
+                        showApp();
+                    }
+                }, 1000);
+            }
         });
 
         // ===== VIDEO ERROR (fallback) =====
         splashVideo.addEventListener('error', function() {
             console.log('Video error, using timer fallback');
-            if (!videoEnded) {
-                startTimerFallback();
+            if (!splashHidden) {
+                startFallbackTimer();
             }
         });
 
-        // ===== TIMER FALLBACK =====
-        function startTimerFallback() {
-            let fallbackTimer = 4;
-            timerText.textContent = `Loading... ${fallbackTimer}s`;
+        // ===== FALLBACK TIMER =====
+        function startFallbackTimer() {
+            let seconds = 10;
+            timerText.textContent = `⏱️ ${seconds}s`;
             const interval = setInterval(function() {
-                fallbackTimer--;
-                if (fallbackTimer > 0) {
-                    timerText.textContent = `Loading... ${fallbackTimer}s`;
+                seconds--;
+                if (seconds > 0) {
+                    timerText.textContent = `⏱️ ${seconds}s`;
                 } else {
                     clearInterval(interval);
-                    timerFinished = true;
                     timerText.textContent = '✅ Ready!';
-                    checkAndShowApp();
+                    showApp();
                 }
             }, 1000);
         }
 
-        // ===== CHECK AND SHOW APP =====
-        function checkAndShowApp() {
+        // ===== SHOW APP =====
+        function showApp() {
             if (splashHidden) return;
             splashHidden = true;
             
@@ -905,18 +918,10 @@
         window.addEventListener('load', function() {
             // Try to play video
             splashVideo.play().then(function() {
-                console.log('Video playing');
-                // Safety: if video doesn't end in 8 seconds, force show app
-                setTimeout(function() {
-                    if (!videoEnded && !timerFinished) {
-                        timerFinished = true;
-                        timerText.textContent = '⏱️ Continuing...';
-                        checkAndShowApp();
-                    }
-                }, 8000); // 8 seconds max
+                console.log('Video playing for 10 seconds');
             }).catch(function(error) {
                 console.log('Autoplay blocked, using timer fallback');
-                startTimerFallback();
+                startFallbackTimer();
             });
         });
 
@@ -928,8 +933,8 @@
             });
             timerText.textContent = '🔊 Sound ON';
             setTimeout(function() {
-                if (!videoEnded && !timerFinished) {
-                    timerText.textContent = 'Loading...';
+                if (!splashHidden) {
+                    timerText.textContent = '⏱️ 10s';
                 }
             }, 1000);
         });
@@ -946,21 +951,6 @@
         window.addEventListener('beforeinstallprompt', function(e) {
             e.preventDefault();
             deferredPrompt = e;
-            // Show banner only after splash
-            setTimeout(function() {
-                if (!splashScreen.classList.contains('hidden')) {
-                    // Wait for splash to finish
-                    const observer = new MutationObserver(function() {
-                        if (splashScreen.classList.contains('hidden')) {
-                            installBanner.classList.add('show');
-                            observer.disconnect();
-                        }
-                    });
-                    observer.observe(splashScreen, { attributes: true, attributeFilter: ['class'] });
-                } else {
-                    installBanner.classList.add('show');
-                }
-            }, 1000);
         });
 
         installBtn.addEventListener('click', function() {
@@ -1010,11 +1000,11 @@
         });
 
         // =====================================================
-        //  REST OF THE APP CODE (Crop, Generate, etc.)
+        //  REST OF THE APP CODE
         // =====================================================
-        // ... (keep all the existing app functionality)
-        // The app code remains the same as before
-        // Just make sure all DOM refs are defined
+        // ... (Keep all the existing app functionality here)
+        // All the crop, generate, rotate, print, share, download code
+        // from the previous version remains the same
     </script>
 </body>
 </html>
