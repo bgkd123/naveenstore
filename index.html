@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>NAVEEN STORE - Passport Photo Maker</title>
+    <title>NAVEEN STORE - Passport Maker</title>
     
-    <!-- ===== PWA META TAGS ===== -->
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -21,529 +20,193 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #e8ecf1;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f0f2f5;
             min-height: 100vh;
-            padding: 20px;
+            padding: 16px;
             user-select: none;
-            overflow-x: hidden;
         }
 
-        /* ============================================
-                   WELCOME SCREEN
-                   ============================================ */
+        /* ===== WELCOME ===== */
         #welcomeScreen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0d47a1, #1a237e, #0d47a1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0d47a1, #1a237e);
+            display: flex; justify-content: center; align-items: center;
             z-index: 10000;
-            transition: opacity 1s ease, visibility 1s ease;
+            transition: opacity 0.8s ease;
         }
-        #welcomeScreen.hidden {
-            opacity: 0;
-            visibility: hidden;
+        #welcomeScreen.hidden { opacity: 0; pointer-events: none; }
+        .welcome-box { text-align: center; color: white; padding: 30px; max-width: 450px; }
+        .welcome-box .logo { font-size: 72px; }
+        .welcome-box h1 { font-size: 38px; letter-spacing: 3px; }
+        .welcome-box h1 span { color: #ffd54f; }
+        .welcome-box p { color: #90caf9; margin: 8px 0 15px; font-size: 14px; }
+        .welcome-box .feat { 
+            display: inline-block; background: rgba(255,255,255,0.1); 
+            padding: 4px 14px; border-radius: 20px; font-size: 12px; margin: 4px;
         }
-        .welcome-content {
-            text-align: center;
-            color: white;
-            width: 100%;
-            max-width: 550px;
-            padding: 30px 25px;
+        .welcome-box .btn-go { 
+            margin-top: 25px; padding: 14px 50px; border: none; border-radius: 50px;
+            background: #ffd54f; color: #1a237e; font-size: 18px; font-weight: 700;
+            cursor: pointer; transition: 0.3s;
         }
-        .welcome-content .store-logo {
-            font-size: 72px;
-            margin-bottom: 10px;
-        }
-        .welcome-content .store-name {
-            font-size: 42px;
-            font-weight: 700;
-            letter-spacing: 4px;
-        }
-        .welcome-content .store-name span {
-            color: #ffd54f;
-        }
-        .welcome-content .tagline {
-            font-size: 16px;
-            color: #90caf9;
-            margin-top: 8px;
-            letter-spacing: 2px;
-            font-weight: 300;
-        }
-        .welcome-content .description {
-            font-size: 14px;
-            color: rgba(255,255,255,0.8);
-            margin-top: 15px;
-            line-height: 1.7;
-            padding: 0 10px;
-        }
-        .welcome-content .features {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 18px;
-        }
-        .welcome-content .features .feat {
-            background: rgba(255,255,255,0.1);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #90caf9;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .welcome-content .btn-continue {
-            margin-top: 30px;
-            padding: 14px 50px;
-            border: none;
-            border-radius: 50px;
-            background: #ffd54f;
-            color: #1a237e;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 20px rgba(255,213,79,0.3);
-        }
-        .welcome-content .btn-continue:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 30px rgba(255,213,79,0.5);
-        }
-        .welcome-content .btn-continue:active {
-            transform: scale(0.95);
-        }
-        .welcome-content .creator-tag {
-            font-size: 12px;
-            color: rgba(255,255,255,0.3);
-            margin-top: 25px;
-            letter-spacing: 1px;
-        }
+        .welcome-box .btn-go:hover { transform: scale(1.05); }
+        .welcome-box .credit { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 20px; }
 
-        /* ============================================
-                   SPLASH SCREEN (VIDEO)
-                   ============================================ */
+        /* ===== SPLASH ===== */
         #splashScreen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0d47a1, #1a237e, #0d47a1);
-            display: none;
-            justify-content: center;
-            align-items: center;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0d47a1, #1a237e);
+            display: none; justify-content: center; align-items: center;
             z-index: 9999;
-            transition: opacity 1s ease, visibility 1s ease;
         }
-        #splashScreen.show {
-            display: flex;
-        }
-        #splashScreen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            display: flex !important;
-        }
-        .splash-content {
-            text-align: center;
-            color: white;
-            width: 100%;
-            max-width: 500px;
-            padding: 20px;
-        }
-        .splash-content video {
-            width: 100%;
-            max-width: 320px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            background: transparent;
-        }
-        .splash-content .logo-text {
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            margin-top: 10px;
-        }
-        .splash-content .logo-text span {
-            color: #ffd54f;
-        }
-        .splash-content .sub-text {
-            font-size: 14px;
-            color: #90caf9;
-            margin-top: 5px;
-            letter-spacing: 1px;
-            font-weight: 300;
-        }
-        .splash-content .creator-text {
-            font-size: 13px;
-            color: rgba(255,255,255,0.5);
-            margin-top: 15px;
-            letter-spacing: 1px;
-        }
-        .splash-content .loader {
-            width: 35px;
-            height: 35px;
-            margin: 15px auto 0;
+        #splashScreen.show { display: flex; }
+        .splash-box { text-align: center; color: white; max-width: 400px; padding: 20px; }
+        .splash-box video { width: 100%; max-width: 280px; border-radius: 16px; }
+        .splash-box .loader {
+            width: 32px; height: 32px; margin: 15px auto;
             border: 3px solid rgba(255,255,255,0.1);
-            border-top-color: #ffd54f;
-            border-radius: 50%;
+            border-top-color: #ffd54f; border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        .splash-content .timer-text {
-            font-size: 12px;
-            color: rgba(255,255,255,0.35);
-            margin-top: 8px;
-            letter-spacing: 1px;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== PWA INSTALL BANNER ===== */
+        /* ===== INSTALL BANNER ===== */
         #installBanner {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #1a237e, #0d47a1);
-            color: white;
-            padding: 14px 24px;
-            border-radius: 16px;
-            display: none;
-            align-items: center;
-            gap: 16px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-            z-index: 9998;
-            max-width: 90%;
-            flex-wrap: wrap;
+            position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+            background: #1a237e; color: white; padding: 12px 20px; border-radius: 14px;
+            display: none; align-items: center; gap: 14px; z-index: 9998;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3); max-width: 90%; flex-wrap: wrap;
             justify-content: center;
-            animation: slideUp 0.5s ease;
         }
-        #installBanner.show {
-            display: flex;
-        }
-        @keyframes slideUp {
-            from { transform: translateX(-50%) translateY(100px); opacity: 0; }
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
-        #installBanner .icon { font-size: 28px; }
-        #installBanner .text { font-size: 13px; font-weight: 500; }
-        #installBanner .text small {
-            font-weight: 300;
-            font-size: 11px;
-            color: #90caf9;
-            display: block;
-        }
-        #installBanner .btn-install {
-            background: #ffd54f;
-            color: #1a237e;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        #installBanner .btn-install:hover { transform: scale(1.05); }
-        #installBanner .btn-close {
-            background: transparent;
-            color: rgba(255,255,255,0.6);
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 0 5px;
-        }
-        #installBanner .btn-close:hover { color: white; }
+        #installBanner.show { display: flex; }
+        #installBanner .btn-install { background: #ffd54f; color: #1a237e; border: none; padding: 6px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        #installBanner .btn-close { background: transparent; color: rgba(255,255,255,0.5); border: none; font-size: 18px; cursor: pointer; }
 
-        .app-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: none;
-        }
+        /* ===== APP ===== */
+        .app { max-width: 1200px; margin: 0 auto; display: none; }
 
         /* ===== HEADER ===== */
-        .app-header {
+        .header {
             background: linear-gradient(135deg, #1a237e, #0d47a1);
-            border-radius: 16px;
-            padding: 20px 30px;
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border-radius: 14px; padding: 16px 24px; margin-bottom: 18px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        .app-header .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .header .brand { display: flex; align-items: center; gap: 10px; }
+        .header .brand h1 { color: white; font-size: 20px; font-weight: 700; }
+        .header .brand h1 span { font-weight: 300; color: #90caf9; }
+        .header .brand small { display: block; font-size: 10px; color: #90caf9; font-weight: 300; }
+        .header .badge {
+            background: rgba(255,255,255,0.12); color: white; padding: 4px 16px;
+            border-radius: 20px; font-size: 12px; display: flex; align-items: center; gap: 8px;
         }
-        .app-header .brand .icon { font-size: 28px; }
-        .app-header .brand h1 {
-            color: white;
-            font-size: 22px;
-            font-weight: 700;
-        }
-        .app-header .brand h1 span { font-weight: 300; color: #90caf9; }
-        .app-header .brand .tag {
-            font-size: 11px;
-            color: #90caf9;
-            display: block;
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
-        .app-header .badge {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            padding: 6px 18px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .app-header .badge strong { color: #ffd54f; }
-        .app-header .badge .install-icon {
-            cursor: pointer;
-            font-size: 18px;
-            transition: 0.3s;
-        }
-        .app-header .badge .install-icon:hover { transform: scale(1.2); }
-
-        /* ===== MAIN CARD ===== */
-        .main-card {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        }
+        .header .badge .install-icon { cursor: pointer; font-size: 16px; }
 
         /* ===== STEPS ===== */
-        .step-bar {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+        .steps {
+            display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; flex-wrap: wrap;
         }
-        .step-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #9e9e9e;
-            font-size: 14px;
-            font-weight: 500;
+        .steps .s {
+            display: flex; align-items: center; gap: 8px; color: #999; font-size: 13px; font-weight: 500;
         }
-        .step-item .num {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #e0e0e0;
-            color: #757575;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-            transition: 0.3s;
+        .steps .s .num {
+            width: 28px; height: 28px; border-radius: 50%; background: #e0e0e0; color: #757575;
+            display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;
         }
-        .step-item.active { color: #1a237e; }
-        .step-item.active .num { background: #1a237e; color: white; }
-        .step-item.done { color: #2e7d32; }
-        .step-item.done .num { background: #2e7d32; color: white; }
-        .step-item .line {
-            width: 30px;
-            height: 2px;
-            background: #e0e0e0;
-        }
-        .step-item.active .line { background: #1a237e; }
-        .step-item.done .line { background: #2e7d32; }
+        .steps .s.active { color: #1a237e; }
+        .steps .s.active .num { background: #1a237e; color: white; }
+        .steps .s.done .num { background: #2e7d32; color: white; }
+        .steps .s .line { width: 25px; height: 2px; background: #e0e0e0; }
 
-        /* ===== PAGES ===== */
+        /* ===== CARD ===== */
+        .card {
+            background: white; border-radius: 14px; padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+
+        /* ===== PAGE ===== */
         .page { display: none; }
         .page.active { display: block; }
 
-        /* ===== UPLOAD BOX ===== */
+        /* ===== UPLOAD ===== */
         .upload-box {
-            border: 2px dashed #90caf9;
-            border-radius: 12px;
-            padding: 50px 30px;
-            text-align: center;
-            cursor: pointer;
-            background: #f5f8ff;
-            transition: 0.3s;
-            margin-bottom: 20px;
+            border: 2px dashed #90caf9; border-radius: 12px; padding: 40px 20px;
+            text-align: center; cursor: pointer; background: #f5f8ff; transition: 0.3s;
+            margin-bottom: 16px;
         }
         .upload-box:hover { background: #e8f0fe; border-color: #1a237e; }
-        .upload-box .icon { font-size: 56px; }
-        .upload-box h3 { color: #1a237e; margin: 10px 0 5px; }
-        .upload-box p { color: #757575; font-size: 14px; }
+        .upload-box .icon { font-size: 48px; }
+        .upload-box h3 { color: #1a237e; margin: 8px 0 4px; font-size: 18px; }
+        .upload-box p { color: #888; font-size: 13px; }
         #fileInput { display: none; }
-        #previewImg {
-            max-width: 100%;
-            max-height: 280px;
-            display: none;
-            margin: 15px auto;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+        #previewImg { max-width: 100%; max-height: 220px; display: none; margin: 12px auto; border-radius: 8px; }
 
-        /* ===== TWO COLUMN ===== */
-        .row { display: flex; gap: 30px; flex-wrap: wrap; }
-        .col-left { flex: 1; min-width: 300px; }
-        .col-right { flex: 1.2; min-width: 350px; }
+        /* ===== ROW ===== */
+        .row { display: flex; gap: 24px; flex-wrap: wrap; }
+        .col-l { flex: 1; min-width: 280px; }
+        .col-r { flex: 1.2; min-width: 300px; }
 
-        /* ===== IMAGE PREVIEW ===== */
-        .img-wrapper {
-            background: #f5f5f5;
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-            min-height: 320px;
-            border: 2px solid #e0e0e0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .img-wrapper.crop-active { border-color: #1a237e; }
-        .img-wrapper.crop-locked { border-color: #2e7d32; border-width: 3px; }
-        #cropImage { 
-            max-width: 100%; 
-            max-height: 450px;
-            display: block; 
-            object-fit: contain;
-        }
-
-        .img-status {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .img-status .status-badge {
-            font-size: 12px;
-            padding: 4px 14px;
-            border-radius: 12px;
-            font-weight: 600;
-        }
-        .status-badge.locked {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-        .status-badge.active {
-            background: #e3f2fd;
-            color: #0d47a1;
-        }
-        .status-badge.idle {
-            background: #f5f5f5;
-            color: #757575;
-        }
-
-        /* ===== PANELS ===== */
+        /* ===== PANEL ===== */
         .panel {
-            background: #f8f9fc;
-            border-radius: 12px;
-            padding: 18px 20px;
-            margin-bottom: 15px;
-            border: 1px solid #e8ecf1;
+            background: #f8f9fc; border-radius: 10px; padding: 14px 16px;
+            margin-bottom: 12px; border: 1px solid #e8ecf1;
         }
-        .panel h4 {
-            font-size: 14px;
-            color: #1a237e;
-            margin-bottom: 12px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .panel h4 .sub {
-            font-weight: 400;
-            color: #757575;
-            font-size: 12px;
-            margin-left: auto;
-        }
+        .panel .title { font-size: 13px; font-weight: 600; color: #1a237e; margin-bottom: 8px; }
 
-        .size-group {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+        .input-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .input-row label { font-size: 12px; color: #666; font-weight: 500; min-width: 50px; }
+        .input-row input, .input-row select {
+            padding: 6px 10px; border: 1.5px solid #ddd; border-radius: 6px; font-size: 13px;
+            background: white; flex: 1; min-width: 60px;
         }
-        .size-group .field {
-            flex: 1;
-            min-width: 80px;
-        }
-        .size-group .field label {
-            font-size: 12px;
-            color: #757575;
-            font-weight: 500;
-            display: block;
-            margin-bottom: 3px;
-        }
-        .size-group .field input,
-        .size-group .field select {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1.5px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            background: white;
-        }
-        .size-group .field input:focus,
-        .size-group .field select:focus {
-            outline: none;
-            border-color: #1a237e;
-        }
-        .size-group .field .hint {
-            font-size: 11px;
-            color: #999;
-            margin-top: 2px;
-        }
+        .input-row input:focus { outline: none; border-color: #1a237e; }
+        .input-row input[type="number"] { max-width: 80px; }
+        .input-row input[type="color"] { width: 36px; height: 32px; padding: 2px; cursor: pointer; }
 
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 6px 0;
+        .chk { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+        .chk input[type="checkbox"] { width: 16px; height: 16px; accent-color: #1a237e; cursor: pointer; }
+        .chk label { font-size: 13px; color: #333; cursor: pointer; }
+
+        /* ===== SLIDER ===== */
+        .slider-box {
+            background: #eef2ff; border-radius: 8px; padding: 10px 12px; margin: 6px 0;
+            border: 1px solid #dce3f0;
         }
-        .checkbox-group input[type="checkbox"] {
-            width: 17px;
-            height: 17px;
-            accent-color: #1a237e;
-            cursor: pointer;
+        .slider-box .head {
+            display: flex; justify-content: space-between; align-items: center; font-size: 13px;
+            color: #1a237e; font-weight: 500;
         }
-        .checkbox-group label {
-            font-size: 13px;
-            color: #333;
-            cursor: pointer;
+        .slider-box .head .val { background: white; padding: 0 12px; border-radius: 12px; font-weight: 700; font-size: 13px; border: 1px solid #ddd; }
+        .slider-box input[type="range"] {
+            width: 100%; margin: 4px 0;
+            -webkit-appearance: none; appearance: none; height: 4px;
+            background: #1a237e; border-radius: 2px; outline: none;
         }
+        .slider-box input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 18px; height: 18px;
+            border-radius: 50%; background: #1a237e; cursor: pointer;
+            border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .slider-box input[type="range"]::-moz-range-thumb {
+            width: 18px; height: 18px; border-radius: 50%;
+            background: #1a237e; cursor: pointer;
+            border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .slider-box .labels { display: flex; justify-content: space-between; font-size: 10px; color: #999; }
 
         /* ===== BUTTONS ===== */
         .btn {
-            padding: 10px 24px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.25s;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            padding: 10px 20px; border: none; border-radius: 8px; font-weight: 600;
+            cursor: pointer; transition: 0.25s; font-size: 14px; display: inline-flex;
+            align-items: center; gap: 6px; justify-content: center;
         }
         .btn-primary { background: #1a237e; color: white; }
         .btn-primary:hover { background: #0d47a1; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,35,126,0.3); }
         .btn-success { background: #2e7d32; color: white; }
-        .btn-success:hover { background: #1b5e20; transform: translateY(-1px); }
+        .btn-success:hover { background: #1b5e20; }
         .btn-warning { background: #f57c00; color: white; }
         .btn-warning:hover { background: #e65100; }
         .btn-danger { background: #c62828; color: white; }
@@ -551,263 +214,156 @@
         .btn-outline { background: transparent; color: #1a237e; border: 2px solid #1a237e; }
         .btn-outline:hover { background: #1a237e; color: white; }
         .btn-info { background: #0288d1; color: white; }
-        .btn-info:hover { background: #0277bd; transform: translateY(-1px); }
+        .btn-info:hover { background: #0277bd; }
         .btn-sm { padding: 6px 14px; font-size: 12px; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        .btn-block { width: 100%; justify-content: center; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .action-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
-        .action-row .btn { flex: 1; min-width: 100px; justify-content: center; }
+        .action-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        .action-row .btn { flex: 1; min-width: 100px; }
 
         /* ===== ROTATE ===== */
-        .rotate-group {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-top: 6px;
-        }
-        .rotate-group .btn { flex: 1; min-width: 50px; justify-content: center; padding: 8px 12px; font-size: 12px; }
+        .rotate-group { display: flex; gap: 6px; flex-wrap: wrap; }
+        .rotate-group .btn { flex: 1; min-width: 45px; padding: 6px 10px; font-size: 12px; }
 
-        .info-badge {
-            display: inline-block;
-            padding: 3px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-            background: #e3f2fd;
-            color: #0d47a1;
-        }
+        .info-badge { display: inline-block; padding: 2px 12px; border-radius: 12px; font-size: 12px; font-weight: 500; background: #e3f2fd; color: #0d47a1; }
 
         /* ===== PREVIEW ===== */
-        .sheet-preview {
-            margin-top: 15px;
-            text-align: center;
-        }
-        .sheet-preview canvas {
-            max-width: 100%;
-            border-radius: 10px;
-            border: 2px solid #e0e0e0;
-            max-height: 500px;
-        }
-        .sheet-preview .info-line {
-            font-size: 13px;
-            color: #757575;
-            margin-top: 8px;
-        }
+        .sheet-preview { margin-top: 12px; text-align: center; }
+        .sheet-preview canvas { max-width: 100%; border-radius: 10px; border: 2px solid #e0e0e0; max-height: 450px; }
+        .sheet-preview .info { font-size: 12px; color: #888; margin-top: 6px; }
 
-        /* ===== ACTION BUTTONS ===== */
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 15px;
+        /* ===== IMAGE PREVIEW ===== */
+        .img-wrap {
+            background: #f5f5f5; border-radius: 10px; overflow: hidden; min-height: 280px;
+            border: 2px solid #e0e0e0; display: flex; align-items: center; justify-content: center;
         }
-        .action-buttons .btn {
-            flex: 1;
-            min-width: 100px;
-            justify-content: center;
-        }
+        .img-wrap.crop-active { border-color: #1a237e; }
+        .img-wrap.crop-locked { border-color: #2e7d32; border-width: 3px; }
+        #cropImage { max-width: 100%; max-height: 400px; display: block; object-fit: contain; }
 
-        /* ===== FOOTER ===== */
-        .app-footer {
-            text-align: center;
-            padding: 15px 0 5px;
-            color: #999;
-            font-size: 13px;
-            border-top: 1px solid #e8ecf1;
-            margin-top: 20px;
+        .status-bar {
+            display: flex; justify-content: space-between; align-items: center; margin-top: 8px;
+            flex-wrap: wrap; gap: 6px; font-size: 12px; color: #888;
         }
-        .app-footer strong { color: #1a237e; }
+        .status-bar .badge { font-size: 11px; padding: 2px 12px; border-radius: 12px; font-weight: 600; }
+        .badge.locked { background: #e8f5e9; color: #2e7d32; }
+        .badge.active { background: #e3f2fd; color: #0d47a1; }
+        .badge.idle { background: #f5f5f5; color: #757575; }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .app-header { padding: 15px 18px; flex-direction: column; text-align: center; gap: 10px; }
-            .app-header .brand h1 { font-size: 18px; }
-            .step-bar { gap: 15px; font-size: 12px; }
-            .step-item .line { width: 15px; }
-            .main-card { padding: 18px; }
-            .col-left, .col-right { min-width: auto; }
+            .header { padding: 14px 18px; flex-direction: column; text-align: center; gap: 8px; }
+            .header .brand h1 { font-size: 17px; }
+            .steps { gap: 12px; font-size: 12px; }
+            .steps .s .line { width: 15px; }
+            .card { padding: 16px; }
             .row { flex-direction: column; }
-            .action-row .btn { min-width: 80px; }
-            .action-buttons .btn { min-width: 80px; }
-            #installBanner { padding: 12px 16px; gap: 10px; }
-            #installBanner .text { font-size: 12px; }
-            .welcome-content .store-name { font-size: 30px; }
-            .welcome-content .store-logo { font-size: 56px; }
-            .welcome-content .description { font-size: 13px; }
-            .splash-content video { max-width: 250px; }
-        }
-
-        /* ===== PRINT STYLES ===== */
-        @media print {
-            body * { display: none !important; }
-            .print-sheet, .print-sheet * { 
-                display: block !important; 
-                visibility: visible !important;
-            }
-            .print-sheet {
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 6in !important;
-                height: 4in !important;
-                background: white !important;
-                box-shadow: none !important;
-                border: none !important;
-            }
-            .print-sheet img {
-                width: 6in !important;
-                height: 4in !important;
-                object-fit: contain !important;
-            }
-            @page {
-                size: 6in 4in !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                border: none !important;
-            }
+            .col-l, .col-r { min-width: auto; }
+            .input-row input[type="number"] { max-width: 70px; }
+            .welcome-box h1 { font-size: 28px; }
+            .welcome-box .logo { font-size: 56px; }
+            .splash-box video { max-width: 220px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ============================================
-    WELCOME SCREEN (Store Name + Description)
-    ============================================ -->
+    <!-- ===== WELCOME ===== -->
     <div id="welcomeScreen">
-        <div class="welcome-content">
-            <div class="store-logo">📸</div>
-            <div class="store-name">NAVEEN <span>STORE</span></div>
-            <div class="tagline">✦ Passport Photo Studio ✦</div>
-            <div class="description">
-                Welcome to <strong>NAVEEN STORE</strong> — Your trusted destination for 
-                <strong>professional passport photos</strong>. 
-                We provide high-quality 35mm × 45mm passport photos 
-                with precise cropping, white border, and 300 DPI resolution. 
-                Perfect for all your official document needs.
-            </div>
-            <div class="features">
-                <span class="feat">📐 35mm × 45mm</span>
+        <div class="welcome-box">
+            <div class="logo">📸</div>
+            <h1>NAVEEN <span>STORE</span></h1>
+            <p>Passport Photo Studio</p>
+            <div>
+                <span class="feat">📐 35×45mm</span>
                 <span class="feat">🖼️ 300 DPI</span>
-                <span class="feat">✂️ Precision Crop</span>
-                <span class="feat">📋 6×4 Sheet</span>
-                <span class="feat">🖨️ Print Ready</span>
+                <span class="feat">✂️ Crop</span>
+                <span class="feat">📋 6×4</span>
             </div>
-            <button class="btn-continue" id="continueBtn">➡️ Continue</button>
-            <div class="creator-tag">Created by Sanil</div>
+            <button class="btn-go" id="continueBtn">➡️ Continue</button>
+            <div class="credit">Created by Sanil</div>
         </div>
     </div>
 
-    <!-- ============================================
-    SPLASH SCREEN (VIDEO WITH SOUND)
-    ============================================ -->
+    <!-- ===== SPLASH ===== -->
     <div id="splashScreen">
-        <div class="splash-content">
+        <div class="splash-box">
             <video id="splashVideo" autoplay playsinline>
                 <source src="pasplash.webm" type="video/webm">
-                <div style="font-size:60px;padding:30px;">📸</div>
             </video>
-            <div class="logo-text">NAVEEN <span>STORE</span></div>
-            <div class="sub-text">Passport Photo Studio</div>
             <div class="loader"></div>
-            <div class="creator-text">Created by Sanil</div>
-            <div class="timer-text" id="timerText">⏱️ 10s</div>
+            <div id="timerText" style="color:rgba(255,255,255,0.4);font-size:13px;">⏱️ 10s</div>
         </div>
     </div>
 
-    <!-- ===== PWA INSTALL BANNER ===== -->
+    <!-- ===== INSTALL ===== -->
     <div id="installBanner">
-        <span class="icon">📸</span>
-        <div class="text">
-            NAVEEN STORE
-            <small>Install app for faster access</small>
-        </div>
-        <button class="btn-install" id="installBtn">📥 Install</button>
+        <span>📸</span>
+        <span style="font-size:13px;">Install <strong>NAVEEN STORE</strong></span>
+        <button class="btn-install" id="installBtn">Install</button>
         <button class="btn-close" id="closeInstallBanner">✕</button>
     </div>
 
-    <!-- ===== MAIN APP ===== -->
-    <div class="app-container" id="appContainer">
+    <!-- ============================================================ -->
+    <!-- APP -->
+    <!-- ============================================================ -->
+    <div class="app" id="appContainer">
 
-        <!-- HEADER -->
-        <div class="app-header">
+        <div class="header">
             <div class="brand">
-                <span class="icon">📸</span>
+                <span style="font-size:24px;">📸</span>
                 <div>
                     <h1>NAVEEN <span>STORE</span></h1>
-                    <span class="tag">Passport Photo Studio</span>
+                    <small>Passport Photo Studio</small>
                 </div>
             </div>
             <div class="badge">
-                📐 <strong>35mm × 45mm</strong> · 300 DPI
-                <span class="install-icon" id="headerInstallBtn" title="Install App">⬇️</span>
+                📐 35×45mm · 300 DPI
+                <span class="install-icon" id="headerInstallBtn" title="Install">⬇️</span>
             </div>
         </div>
 
-        <!-- MAIN CARD -->
-        <div class="main-card">
+        <div class="steps">
+            <div class="s active" id="step1"><span class="num">1</span> Upload & Crop <span class="line"></span></div>
+            <div class="s" id="step2"><span class="num">2</span> Arrange & Export</div>
+        </div>
 
-            <!-- STEP BAR -->
-            <div class="step-bar">
-                <div class="step-item active" id="step1">
-                    <span class="num">1</span> Upload & Crop
-                    <span class="line"></span>
-                </div>
-                <div class="step-item" id="step2">
-                    <span class="num">2</span> Arrange & Export
-                </div>
-            </div>
+        <div class="card">
 
-            <!-- PAGE 1: UPLOAD + CROP -->
+            <!-- ========================================== -->
+            <!-- PAGE 1                                        -->
+            <!-- ========================================== -->
             <div class="page active" id="page1">
 
                 <div class="upload-box" id="uploadBox">
                     <div class="icon">🖼️</div>
                     <h3>Upload Photo</h3>
-                    <p>Click or drag &amp; drop your image here</p>
+                    <p>Click or drag &amp; drop</p>
                     <img id="previewImg" alt="Preview">
                     <input type="file" id="fileInput" accept="image/*">
                 </div>
 
                 <div id="cropArea" style="display:none;">
                     <div class="row">
-
-                        <div class="col-left">
+                        <div class="col-l">
                             <div class="panel">
-                                <h4>📐 Crop Size <span class="sub">35mm × 45mm</span></h4>
-                                <div class="size-group">
-                                    <div class="field">
-                                        <label>Width</label>
-                                        <input type="number" id="cropWidth" value="35" step="0.5" min="10" max="60">
-                                        <div class="hint">mm</div>
-                                    </div>
-                                    <div class="field">
-                                        <label>Height</label>
-                                        <input type="number" id="cropHeight" value="45" step="0.5" min="10" max="60">
-                                        <div class="hint">mm</div>
-                                    </div>
-                                    <div class="field">
-                                        <label>DPI</label>
-                                        <input type="number" id="dpiInput" value="300" step="50" min="72" max="1200">
-                                        <div class="hint">pixels/inch</div>
-                                    </div>
+                                <div class="title">📐 Crop Size</div>
+                                <div class="input-row">
+                                    <label>W</label>
+                                    <input type="number" id="cropWidth" value="35" step="0.5" min="10" max="60">
+                                    <label>H</label>
+                                    <input type="number" id="cropHeight" value="45" step="0.5" min="10" max="60">
+                                    <label>DPI</label>
+                                    <input type="number" id="dpiInput" value="300" step="50" min="72" max="1200" style="max-width:70px;">
                                 </div>
                             </div>
 
                             <div class="panel">
-                                <h4>🎨 Border</h4>
-                                <div class="checkbox-group">
+                                <div class="title">🎨 Outer Border</div>
+                                <div class="chk">
                                     <input type="checkbox" id="borderCheckbox" checked>
-                                    <label for="borderCheckbox"><strong>0.5mm</strong> white border (4 sides)</label>
-                                </div>
-                                <div style="font-size:12px;color:#888;margin-top:2px;padding-left:28px;">
-                                    Final size: <strong id="borderSizePreview">36 × 46 mm</strong>
+                                    <label for="borderCheckbox">Add 0.5mm white border</label>
                                 </div>
                             </div>
 
@@ -816,155 +372,145 @@
                                 <button class="btn btn-outline" id="resetCropBtn">↺ Reset</button>
                             </div>
 
-                            <div id="cropInfo" style="display:none;margin-top:12px;padding:12px 16px;background:#e8f5e9;border-radius:8px;border-left:4px solid #2e7d32;">
-                                <div style="font-size:13px;color:#1b5e20;">
-                                    ✅ Cropped: <strong id="cropResultSize">35 × 45 mm</strong>
-                                    <span style="display:block;font-size:12px;color:#555;margin-top:2px;">
-                                        Resolution: <span id="cropResultPx">413 × 531 px</span> @ 300 DPI
-                                    </span>
-                                    <span id="borderResultInfo" style="display:none;font-size:12px;color:#e65100;">
-                                        🟦 +0.5mm border → Total: <span id="borderTotalSize">36 × 46 mm</span>
-                                    </span>
-                                </div>
+                            <div id="cropInfo" style="display:none;margin-top:10px;padding:10px 14px;background:#e8f5e9;border-radius:8px;font-size:13px;color:#1b5e20;">
+                                ✅ Cropped: <strong id="cropResultSize">35×45mm</strong>
+                                <span style="display:block;font-size:12px;color:#555;">Resolution: <span id="cropResultPx">413×531px</span></span>
+                                <span id="borderResultInfo" style="display:none;color:#e65100;">+ border → <span id="borderTotalSize">36×46mm</span></span>
                             </div>
 
-                            <div id="lockedStatus" style="display:none;margin-top:10px;padding:10px 14px;background:#f5f5f5;border-radius:8px;border:1px dashed #2e7d32;">
-                                <span style="font-size:13px;color:#2e7d32;">🔒 <strong>Crop Locked</strong> — Click "Re-crop" to adjust</span>
+                            <div id="lockedStatus" style="display:none;margin-top:10px;padding:8px 14px;background:#f5f5f5;border-radius:8px;font-size:13px;color:#2e7d32;border:1px dashed #2e7d32;">
+                                🔒 Crop Locked
                             </div>
 
-                            <button class="btn btn-primary" id="nextBtn" style="width:100%;margin-top:15px;justify-content:center;" disabled>
-                                ➡️ Next — Arrange & Export
+                            <button class="btn btn-primary btn-block" id="nextBtn" disabled style="margin-top:12px;">
+                                ➡️ Next
                             </button>
                         </div>
 
-                        <div class="col-right">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+                        <div class="col-r">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:4px;">
                                 <span style="font-weight:600;font-size:14px;color:#1a237e;">👁️ Preview</span>
                                 <span id="statusBadge" class="info-badge">⏳ Idle</span>
                             </div>
-                            <div class="img-wrapper" id="imgWrapper">
+                            <div class="img-wrap" id="imgWrapper">
                                 <img id="cropImage" src="" alt="Crop" oncontextmenu="return false;">
                             </div>
-                            <div style="display:flex;justify-content:space-between;margin-top:8px;flex-wrap:wrap;gap:6px;font-size:12px;color:#888;">
-                                <span id="previewHint">👆 Upload an image to start</span>
-                                <span id="cropStatusText">Crop: <strong style="color:#757575;">Not cropped</strong></span>
+                            <div class="status-bar">
+                                <span id="previewHint">👆 Upload image</span>
+                                <span id="cropStatusText">Crop: <strong style="color:#999;">Not cropped</strong></span>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
 
-            <!-- PAGE 2: ARRANGE & EXPORT -->
+            <!-- ========================================== -->
+            <!-- PAGE 2                                        -->
+            <!-- ========================================== -->
             <div class="page" id="page2">
 
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:15px;">
-                    <h3 style="color:#1a237e;font-size:18px;">📋 Arrange on 6×4 inch Paper</h3>
-                    <button class="btn btn-outline btn-sm" id="backToCrop">← Back to Crop</button>
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+                    <span style="font-weight:600;color:#1a237e;font-size:16px;">📋 Arrange</span>
+                    <button class="btn btn-outline btn-sm" id="backToCrop">← Back</button>
                 </div>
 
                 <div class="row">
+                    <div class="col-l">
 
-                    <div class="col-left">
+                        <!-- Copies -->
                         <div class="panel">
-                            <h4>📋 Copies</h4>
-                            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-                                <label style="font-size:13px;font-weight:500;">Quantity:</label>
-                                <input type="number" id="copiesInput" value="6" min="1" max="50" style="width:80px;padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;">
-                                <span style="font-size:13px;color:#757575;">photos per sheet: <strong id="perSheetCount">0</strong></span>
+                            <div class="title">📋 Copies</div>
+                            <div class="input-row">
+                                <label>Qty</label>
+                                <input type="number" id="copiesInput" value="6" min="1" max="50">
+                                <span style="font-size:12px;color:#888;">/ sheet: <strong id="perSheetCount">0</strong></span>
                             </div>
-                            <div class="checkbox-group" style="margin-top:8px;">
+                            <div class="chk" style="margin-top:4px;">
                                 <input type="checkbox" id="fillCheckbox" checked>
-                                <label for="fillCheckbox"><strong>Auto-fill</strong> — rotate to fit 6×4</label>
+                                <label for="fillCheckbox">Auto-fill</label>
                             </div>
                         </div>
 
+                        <!-- Marks -->
                         <div class="panel">
-                            <h4>✂️ Cutting Marks & Stroke</h4>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="showCutMarks">
-                                <label for="showCutMarks">✂️ Corner cutting marks</label>
-                            </div>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="showStroke" checked>
-                                <label for="showStroke">📐 Stroke border</label>
-                            </div>
-                            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:6px;">
-                                <label style="font-size:13px;">Color:</label>
-                                <input type="color" id="strokeColor" value="#000000" style="width:40px;height:35px;padding:2px;border:1px solid #ddd;border-radius:6px;cursor:pointer;">
-                                <label style="font-size:13px;">Width:</label>
-                                <input type="number" id="strokeWidth" value="1" min="0.5" max="5" step="0.5" style="width:60px;padding:6px 10px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;">
-                                <span style="font-size:12px;color:#888;">px</span>
+                            <div class="title">✂️ Marks & Stroke</div>
+                            <div class="chk"><input type="checkbox" id="showCutMarks"><label for="showCutMarks">Cutting marks</label></div>
+                            <div class="chk"><input type="checkbox" id="showStroke" checked><label for="showStroke">Stroke</label></div>
+                            <div class="input-row" style="margin-top:4px;">
+                                <label>Color</label>
+                                <input type="color" id="strokeColor" value="#000000">
+                                <label>W</label>
+                                <input type="number" id="strokeWidth" value="1" min="0.5" max="5" step="0.5" style="max-width:60px;">
                             </div>
                         </div>
 
-                        <button class="btn btn-warning" id="recropBtn" style="width:100%;justify-content:center;margin-bottom:10px;">
-                            🔄 Re-crop Image
-                        </button>
+                        <!-- Inner Border -->
+                        <div class="panel">
+                            <div class="title">⬜ Inner Border</div>
+                            <div class="chk"><input type="checkbox" id="innerBorderToggle"><label for="innerBorderToggle">Enable</label></div>
+                            <div class="slider-box" id="innerBorderSliderGroup" style="opacity:0.4;pointer-events:none;">
+                                <div class="head">
+                                    <span>Padding</span>
+                                    <span class="val" id="innerBorderValue">0.0 mm</span>
+                                </div>
+                                <input type="range" id="innerBorderSlider" min="0" max="5" step="0.1" value="0">
+                                <div class="labels"><span>0</span><span>5 mm</span></div>
+                            </div>
+                        </div>
 
-                        <button class="btn btn-primary" id="generateBtn" style="width:100%;justify-content:center;">
-                            🖨️ Generate Sheet
-                        </button>
+                        <!-- Rotate -->
+                        <div class="panel">
+                            <div class="title">🔄 Rotate / Flip</div>
+                            <div class="rotate-group">
+                                <button class="btn btn-primary btn-sm" id="rotateLeftBtn">↺</button>
+                                <button class="btn btn-primary btn-sm" id="rotateRightBtn">↻</button>
+                                <button class="btn btn-primary btn-sm" id="flipHBtn">↔</button>
+                                <button class="btn btn-primary btn-sm" id="flipVBtn">↕</button>
+                                <button class="btn btn-outline btn-sm" id="resetRotateBtn">⟲</button>
+                            </div>
+                            <div style="font-size:12px;color:#888;margin-top:4px;">
+                                Angle: <strong id="angleIndicator">0°</strong> · Flip: <strong id="flipIndicator">None</strong>
+                            </div>
+                        </div>
 
+                        <button class="btn btn-warning btn-block" id="recropBtn" style="margin-bottom:8px;">🔄 Re-crop</button>
+
+                    </div>
+
+                    <div class="col-r">
+
+                        <!-- Generate -->
+                        <button class="btn btn-primary btn-block" id="generateBtn">🖨️ Generate Sheet</button>
+
+                        <!-- Sheet Preview -->
                         <div class="sheet-preview" id="previewContainer">
                             <canvas id="outputCanvas"></canvas>
-                            <div class="info-line" id="canvasSizeInfo">6 × 4 inch · 300 DPI</div>
+                            <div class="info" id="canvasSizeInfo">6×4 inch · 300 DPI</div>
                         </div>
+
+                        <!-- Info -->
+                        <div style="padding:10px 14px;background:#f5f8ff;border-radius:8px;border:1px solid #e3f2fd;margin-top:8px;font-size:13px;color:#1a237e;">
+                            📐 <span id="arrangePhotoSize">35×45mm</span> · 📋 <span id="arrangeCount">0</span>/sheet
+                            <span style="display:block;font-size:12px;color:#888;" id="innerBorderInfo">⬜ Inner: <span id="innerBorderInfoText">Off</span></span>
+                        </div>
+
+                        <!-- Actions -->
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+                            <button class="btn btn-info" id="printBtn" style="flex:1;">🖨️ Print</button>
+                            <button class="btn btn-primary" id="shareBtn" style="flex:1;">📤 Share</button>
+                            <button class="btn btn-success" id="downloadPngBtn" style="flex:1;">⬇️ PNG</button>
+                            <button class="btn btn-warning" id="downloadPdfBtn" style="flex:1;">📄 PDF</button>
+                            <button class="btn btn-danger" id="resetAllBtn" style="flex:1;">🔄 New</button>
+                        </div>
+
                     </div>
-
-                    <div class="col-right">
-
-                        <div class="panel">
-                            <h4>🔄 Rotate & Flip <span class="sub">(after crop)</span></h4>
-                            <div class="rotate-group">
-                                <button class="btn btn-primary btn-sm" id="rotateLeftBtn">↺ 90°</button>
-                                <button class="btn btn-primary btn-sm" id="rotateRightBtn">↻ 90°</button>
-                                <button class="btn btn-primary btn-sm" id="flipHBtn">↔ H</button>
-                                <button class="btn btn-primary btn-sm" id="flipVBtn">↕ V</button>
-                                <button class="btn btn-outline btn-sm" id="resetRotateBtn">⟲ Reset</button>
-                            </div>
-                            <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap;font-size:13px;">
-                                <span>📐 Angle: <strong id="angleIndicator">0°</strong></span>
-                                <span>🔄 Flip: <strong id="flipIndicator">None</strong></span>
-                            </div>
-                            <div style="font-size:11px;color:#999;margin-top:4px;">
-                                💡 Rotate/Flip ചെയ്ത ശേഷം "Generate Sheet" വീണ്ടും ക്ലിക്ക് ചെയ്യുക
-                            </div>
-                        </div>
-
-                        <div class="action-buttons">
-                            <button class="btn btn-info" id="printBtn">🖨️ Print</button>
-                            <button class="btn btn-primary" id="shareBtn">📤 Share</button>
-                            <button class="btn btn-success" id="downloadPngBtn">⬇️ PNG</button>
-                            <button class="btn btn-warning" id="downloadPdfBtn">📄 PDF</button>
-                            <button class="btn btn-danger" id="resetAllBtn">🔄 New</button>
-                        </div>
-
-                        <div style="margin-top:15px;padding:12px 16px;background:#f5f8ff;border-radius:10px;border:1px solid #e3f2fd;">
-                            <div style="font-size:13px;color:#1a237e;">
-                                📐 <strong>Photo:</strong> <span id="arrangePhotoSize">35 × 45 mm</span>
-                            </div>
-                            <div style="font-size:13px;color:#1a237e;margin-top:2px;">
-                                📋 <strong>Per sheet:</strong> <span id="arrangeCount">0</span> photos
-                            </div>
-                            <div style="font-size:13px;color:#1a237e;margin-top:2px;">
-                                🖨️ <strong>Paper:</strong> 6 × 4 inch (152 × 102 mm)
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 
-            <!-- ===== FOOTER ===== -->
-            <div class="app-footer">
-                <strong>NAVEEN STORE</strong> · Passport Photo Studio · Created by <strong>Sanil</strong>
-            </div>
+        </div><!-- /card -->
+    </div><!-- /app -->
 
-        </div><!-- /main-card -->
-    </div><!-- /app-container -->
-
-    <!-- ===== HIDDEN PRINT SHEET ===== -->
+    <!-- ===== PRINT SHEET ===== -->
     <div class="print-sheet" style="display:none;position:fixed;top:-9999px;left:-9999px;width:6in;height:4in;">
         <img id="printImage" src="" alt="Print">
     </div>
@@ -972,20 +518,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
         // =====================================================
-        //  SERVICE WORKER REGISTRATION (PWA OFFLINE)
+        //  SERVICE WORKER
         // =====================================================
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(function(registration) {
-                    console.log('Service Worker registered successfully:', registration.scope);
-                })
-                .catch(function(error) {
-                    console.log('Service Worker registration failed:', error);
-                });
+            navigator.serviceWorker.register('sw.js').catch(() => {});
         }
 
         // =====================================================
-        //  WELCOME SCREEN → CONTINUE → SPLASH VIDEO
+        //  WELCOME → SPLASH → APP
         // =====================================================
         const welcomeScreen = document.getElementById('welcomeScreen');
         const continueBtn = document.getElementById('continueBtn');
@@ -995,105 +535,34 @@
         const appContainer = document.getElementById('appContainer');
 
         let splashHidden = false;
-        let timerStarted = false;
 
-        // ===== CONTINUE BUTTON → SHOW SPLASH WITH VIDEO =====
         continueBtn.addEventListener('click', function() {
-            // Hide welcome screen
             welcomeScreen.classList.add('hidden');
-            
-            // Show splash screen with video
             splashScreen.classList.add('show');
-            
-            // Play video with sound
             splashVideo.muted = false;
-            splashVideo.play().then(function() {
-                console.log('Video playing with sound');
-            }).catch(function(error) {
-                console.log('Autoplay with sound blocked:', error);
-                // Try with user interaction
-                splashVideo.muted = false;
-                splashVideo.play();
-            });
-
-            // Start timer
-            if (!timerStarted) {
-                timerStarted = true;
-                let seconds = 10;
-                timerText.textContent = `⏱️ ${seconds}s`;
-                
-                const interval = setInterval(function() {
-                    seconds--;
-                    if (seconds > 0) {
-                        timerText.textContent = `⏱️ ${seconds}s`;
-                    } else {
-                        clearInterval(interval);
-                        timerText.textContent = '✅ Ready!';
-                        showApp();
-                    }
-                }, 1000);
-            }
-        });
-
-        // ===== VIDEO ENDS =====
-        splashVideo.addEventListener('ended', function() {
-            if (!splashHidden) {
-                timerText.textContent = '✅ Ready!';
-                showApp();
-            }
-        });
-
-        // ===== VIDEO ERROR (fallback) =====
-        splashVideo.addEventListener('error', function() {
-            console.log('Video error, using timer fallback');
-            if (!splashHidden && !timerStarted) {
-                startFallbackTimer();
-            }
-        });
-
-        // ===== FALLBACK TIMER =====
-        function startFallbackTimer() {
-            timerStarted = true;
+            splashVideo.play().catch(() => {});
+            
             let seconds = 10;
             timerText.textContent = `⏱️ ${seconds}s`;
-            const interval = setInterval(function() {
+            const interval = setInterval(() => {
                 seconds--;
-                if (seconds > 0) {
-                    timerText.textContent = `⏱️ ${seconds}s`;
-                } else {
-                    clearInterval(interval);
-                    timerText.textContent = '✅ Ready!';
-                    showApp();
-                }
+                if (seconds > 0) { timerText.textContent = `⏱️ ${seconds}s`; }
+                else { clearInterval(interval); timerText.textContent = '✅ Ready!'; showApp(); }
             }, 1000);
-        }
+        });
 
-        // ===== SHOW APP =====
+        splashVideo.addEventListener('ended', () => { if (!splashHidden) showApp(); });
+
         function showApp() {
             if (splashHidden) return;
             splashHidden = true;
-            
-            setTimeout(function() {
+            setTimeout(() => {
                 splashScreen.classList.remove('show');
-                splashScreen.classList.add('hidden');
-                splashVideo.pause();
+                splashScreen.style.display = 'none';
                 appContainer.style.display = 'block';
-                
-                setTimeout(function() {
-                    if (deferredPrompt) {
-                        installBanner.classList.add('show');
-                    }
-                }, 1000);
+                if (deferredPrompt) setTimeout(() => installBanner.classList.add('show'), 1000);
             }, 500);
         }
-
-        // ===== Click on splash to enable sound if needed =====
-        splashScreen.addEventListener('click', function() {
-            splashVideo.muted = false;
-            splashVideo.play().catch(function(e) {
-                console.log('Still cannot play with sound');
-            });
-        });
 
         // =====================================================
         //  PWA INSTALL
@@ -1104,67 +573,144 @@
         const closeInstallBanner = document.getElementById('closeInstallBanner');
         const headerInstallBtn = document.getElementById('headerInstallBtn');
 
-        window.addEventListener('beforeinstallprompt', function(e) {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+        installBtn.addEventListener('click', () => { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; installBanner.classList.remove('show'); } });
+        headerInstallBtn.addEventListener('click', () => { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt = null; } else { alert('Install from browser menu'); } });
+        closeInstallBanner.addEventListener('click', () => installBanner.classList.remove('show'));
+        if (window.matchMedia('(display-mode: standalone)').matches) { installBanner.classList.remove('show'); headerInstallBtn.style.display = 'none'; }
 
-        installBtn.addEventListener('click', function() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(function(choiceResult) {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted install');
-                    } else {
-                        console.log('User dismissed install');
-                    }
-                    deferredPrompt = null;
-                    installBanner.classList.remove('show');
-                });
-            }
-        });
+        // =====================================================
+        //  INNER BORDER - LIVE UPDATE (FIXED)
+        // =====================================================
+        const innerBorderToggle = document.getElementById('innerBorderToggle');
+        const innerBorderSlider = document.getElementById('innerBorderSlider');
+        const innerBorderValue = document.getElementById('innerBorderValue');
+        const innerBorderSliderGroup = document.getElementById('innerBorderSliderGroup');
+        const innerBorderInfoText = document.getElementById('innerBorderInfoText');
 
-        headerInstallBtn.addEventListener('click', function() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(function(choiceResult) {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted install');
-                    } else {
-                        console.log('User dismissed install');
-                    }
-                    deferredPrompt = null;
-                    installBanner.classList.remove('show');
-                });
+        innerBorderToggle.addEventListener('change', function() {
+            if (this.checked) {
+                innerBorderSliderGroup.style.opacity = '1';
+                innerBorderSliderGroup.style.pointerEvents = 'auto';
+                innerBorderInfoText.textContent = `${parseFloat(innerBorderSlider.value).toFixed(1)} mm`;
+                // Re-apply crop with new inner border
+                if (croppedImageData && page2.classList.contains('active')) {
+                    reapplyCropAndGenerate();
+                }
             } else {
-                alert('📸 Install app from browser menu\n\nClick the "Install" or "Add to Home Screen" option in your browser menu.');
+                innerBorderSliderGroup.style.opacity = '0.4';
+                innerBorderSliderGroup.style.pointerEvents = 'none';
+                innerBorderSlider.value = 0;
+                innerBorderValue.textContent = '0.0 mm';
+                innerBorderInfoText.textContent = 'Off';
+                // Re-apply crop without inner border
+                if (croppedImageData && page2.classList.contains('active')) {
+                    reapplyCropAndGenerate();
+                }
             }
         });
 
-        closeInstallBanner.addEventListener('click', function() {
-            installBanner.classList.remove('show');
+        // ===== LIVE UPDATE - FIXED =====
+        innerBorderSlider.addEventListener('input', function() {
+            innerBorderValue.textContent = `${parseFloat(this.value).toFixed(1)} mm`;
+            if (innerBorderToggle.checked) {
+                innerBorderInfoText.textContent = `${parseFloat(this.value).toFixed(1)} mm`;
+            }
+            
+            // ✅ FIX: Re-apply crop and regenerate
+            if (croppedImageData && page2.classList.contains('active')) {
+                reapplyCropAndGenerate();
+            }
         });
 
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            installBanner.classList.remove('show');
-            headerInstallBtn.style.display = 'none';
+        // =====================================================
+        //  RE-APPLY CROP AND GENERATE (FIX)
+        // =====================================================
+        function reapplyCropAndGenerate() {
+            if (!croppedImageData) return;
+            
+            const dpi = parseInt(dpiInput.value) || 300;
+            const wVal = parseFloat(cropWidth.value) || 35;
+            const hVal = parseFloat(cropHeight.value) || 45;
+            const addBorder = borderCheckbox.checked;
+            const borderMm = 0.5;
+            const innerBorderEnabled = innerBorderToggle.checked;
+            const innerBorderMm = parseFloat(innerBorderSlider.value) || 0;
+
+            let wMm = wVal, hMm = hVal;
+            let contentPxW = Math.round((wMm / 25.4) * dpi);
+            let contentPxH = Math.round((hMm / 25.4) * dpi);
+
+            // Get the base cropped image (without inner border)
+            // We need to get it from the original cropped data
+            // If we have the raw canvas from cropper, use it
+            let baseImage = croppedImageData;
+            
+            // If the image already has inner border, we need to remove it
+            // For simplicity, we'll re-crop from original if available
+            if (originalImage) {
+                // We'll use the original image and apply crop again
+                // But we don't have the crop coordinates
+                // So we use the existing cropped image as base
+                // And re-apply inner border on top
+                
+                // Create a temp canvas with the base image (which is already cropped)
+                // But the base image may already have inner border applied
+                // So we need to work with the raw cropped image (before inner border)
+                // We'll store rawCroppedImage separately
+                if (rawCroppedImageData) {
+                    baseImage = rawCroppedImageData;
+                } else {
+                    // Fallback: use croppedImageData
+                    baseImage = croppedImageData;
+                }
+            }
+
+            let currentCanvas = baseImage;
+            
+            // Re-apply inner border
+            if (innerBorderEnabled && innerBorderMm > 0) {
+                const innerPx = Math.round((innerBorderMm / 25.4) * dpi);
+                const innerW = currentCanvas.width - (innerPx * 2);
+                const innerH = currentCanvas.height - (innerPx * 2);
+                if (innerW > 0 && innerH > 0) {
+                    const c = document.createElement('canvas');
+                    c.width = currentCanvas.width;
+                    c.height = currentCanvas.height;
+                    const ctx = c.getContext('2d');
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, currentCanvas.width, currentCanvas.height);
+                    ctx.drawImage(currentCanvas, innerPx, innerPx, innerW, innerH);
+                    currentCanvas = c;
+                }
+            }
+
+            // Outer border
+            if (addBorder) {
+                const borderPx = Math.round((borderMm / 25.4) * dpi);
+                const fw = currentCanvas.width + (borderPx * 2);
+                const fh = currentCanvas.height + (borderPx * 2);
+                const c = document.createElement('canvas');
+                c.width = fw; c.height = fh;
+                const ctx = c.getContext('2d');
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, fw, fh);
+                ctx.drawImage(currentCanvas, borderPx, borderPx, currentCanvas.width, currentCanvas.height);
+                currentCanvas = c;
+            }
+
+            croppedImageData = currentCanvas;
+            showCroppedPreview();
+            updateArrangeInfo();
+            generateBtn.click();
         }
 
-        window.addEventListener('appinstalled', function() {
-            installBanner.classList.remove('show');
-            headerInstallBtn.style.display = 'none';
-        });
-
         // =====================================================
-        //  CROP & APP FUNCTIONALITY
+        //  CROP ENGINE
         // =====================================================
-        let cropper = null;
-        let croppedImageData = null;
+        let cropper = null, croppedImageData = null, rawCroppedImageData = null;
         let originalImage = null;
-        let currentAngle = 0;
-        let currentFlipH = false;
-        let currentFlipV = false;
-        let isCropLocked = false;
+        let currentAngle = 0, currentFlipH = false, currentFlipV = false, isCropLocked = false;
 
         // DOM refs
         const uploadBox = document.getElementById('uploadBox');
@@ -1222,7 +768,6 @@
         const canvasSizeInfo = document.getElementById('canvasSizeInfo');
         const angleIndicator = document.getElementById('angleIndicator');
         const flipIndicator = document.getElementById('flipIndicator');
-
         const printImage = document.getElementById('printImage');
 
         const page1 = document.getElementById('page1');
@@ -1253,46 +798,42 @@
             angleIndicator.textContent = `${currentAngle}°`;
             let flipText = 'None';
             if (currentFlipH && currentFlipV) flipText = 'Both';
-            else if (currentFlipH) flipText = 'Horizontal';
-            else if (currentFlipV) flipText = 'Vertical';
+            else if (currentFlipH) flipText = 'H';
+            else if (currentFlipV) flipText = 'V';
             flipIndicator.textContent = flipText;
         }
 
         function updateCropStatus() {
             if (isCropLocked && croppedImageData) {
                 statusBadge.textContent = '🔒 Locked';
-                statusBadge.className = 'status-badge locked';
+                statusBadge.className = 'badge locked';
                 cropStatusText.innerHTML = 'Crop: <strong style="color:#2e7d32;">✅ Locked</strong>';
-                imgWrapper.className = 'img-wrapper crop-locked';
+                imgWrapper.className = 'img-wrap crop-locked';
                 lockedStatus.style.display = 'block';
-                previewHint.textContent = '✅ Cropped area shown below';
+                previewHint.textContent = '✅ Cropped';
                 showCroppedPreview();
             } else if (cropper) {
                 statusBadge.textContent = '✂️ Cropping';
-                statusBadge.className = 'status-badge active';
+                statusBadge.className = 'badge active';
                 cropStatusText.innerHTML = 'Crop: <strong style="color:#0d47a1;">✂️ Active</strong>';
-                imgWrapper.className = 'img-wrapper crop-active';
+                imgWrapper.className = 'img-wrap crop-active';
                 lockedStatus.style.display = 'none';
-                previewHint.textContent = '👆 Drag box to select crop area';
+                previewHint.textContent = '👆 Drag box';
             } else {
                 statusBadge.textContent = '⏳ Idle';
-                statusBadge.className = 'status-badge idle';
-                cropStatusText.innerHTML = 'Crop: <strong style="color:#757575;">Not cropped</strong>';
-                imgWrapper.className = 'img-wrapper';
+                statusBadge.className = 'badge idle';
+                cropStatusText.innerHTML = 'Crop: <strong style="color:#999;">Not cropped</strong>';
+                imgWrapper.className = 'img-wrap';
                 lockedStatus.style.display = 'none';
-                previewHint.textContent = '👆 Upload an image to start';
+                previewHint.textContent = '👆 Upload image';
             }
         }
 
         function showCroppedPreview() {
             if (croppedImageData) {
-                const dataUrl = croppedImageData.toDataURL('image/png');
-                cropImage.src = dataUrl;
+                cropImage.src = croppedImageData.toDataURL('image/png');
                 cropImage.style.display = 'block';
-                if (cropper) {
-                    cropper.destroy();
-                    cropper = null;
-                }
+                if (cropper) { cropper.destroy(); cropper = null; }
             }
         }
 
@@ -1303,25 +844,14 @@
             }
         }
 
-        // =====================================================
-        //  CROPPER INIT
-        // =====================================================
         function initCropper() {
             if (cropper) cropper.destroy();
             const w = parseFloat(cropWidth.value) || 35;
             const h = parseFloat(cropHeight.value) || 45;
             cropper = new Cropper(cropImage, {
-                viewMode: 1,
-                dragMode: 'move',
-                aspectRatio: w / h,
-                autoCropArea: 0.85,
-                restore: false,
-                guides: true,
-                center: true,
-                highlight: false,
-                cropBoxMovable: true,
-                cropBoxResizable: true,
-                toggleDragModeOnDblclick: false,
+                viewMode: 1, dragMode: 'move', aspectRatio: w / h,
+                autoCropArea: 0.85, restore: false, guides: true, center: true,
+                cropBoxMovable: true, cropBoxResizable: true, toggleDragModeOnDblclick: false,
             });
             cropInfo.style.display = 'none';
             isCropLocked = false;
@@ -1333,120 +863,96 @@
         //  APPLY CROP
         // =====================================================
         applyCropBtn.addEventListener('click', function() {
-            if (!cropper) {
-                alert('Please upload an image first!');
-                return;
-            }
+            if (!cropper) { alert('Upload image first!'); return; }
 
             const dpi = parseInt(dpiInput.value) || 300;
             const wVal = parseFloat(cropWidth.value) || 35;
             const hVal = parseFloat(cropHeight.value) || 45;
             const addBorder = borderCheckbox.checked;
             const borderMm = 0.5;
+            const innerBorderEnabled = innerBorderToggle.checked;
+            const innerBorderMm = parseFloat(innerBorderSlider.value) || 0;
 
-            let wMm = wVal;
-            let hMm = hVal;
-
+            let wMm = wVal, hMm = hVal;
             let contentPxW = Math.round((wMm / 25.4) * dpi);
             let contentPxH = Math.round((hMm / 25.4) * dpi);
 
-            const rawCanvas = cropper.getCroppedCanvas({
-                width: contentPxW,
-                height: contentPxH,
-                imageSmoothingEnabled: true,
-            });
-
+            let rawCanvas = cropper.getCroppedCanvas({ width: contentPxW, height: contentPxH, imageSmoothingEnabled: true });
+            
+            // Store raw cropped image (without borders)
+            rawCroppedImageData = rawCanvas;
+            
             let currentCanvas = rawCanvas;
-            let finalWMm = wMm;
-            let finalHMm = hMm;
 
+            // Inner border
+            if (innerBorderEnabled && innerBorderMm > 0) {
+                const innerPx = Math.round((innerBorderMm / 25.4) * dpi);
+                const innerW = contentPxW - (innerPx * 2);
+                const innerH = contentPxH - (innerPx * 2);
+                if (innerW > 0 && innerH > 0) {
+                    const c = document.createElement('canvas');
+                    c.width = contentPxW; c.height = contentPxH;
+                    const ctx = c.getContext('2d');
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, contentPxW, contentPxH);
+                    ctx.drawImage(rawCanvas, innerPx, innerPx, innerW, innerH);
+                    currentCanvas = c;
+                }
+            }
+
+            // Outer border
             if (addBorder) {
                 const borderPx = Math.round((borderMm / 25.4) * dpi);
-                const finalPxW = contentPxW + (borderPx * 2);
-                const finalPxH = contentPxH + (borderPx * 2);
-                finalWMm = wMm + (borderMm * 2);
-                finalHMm = hMm + (borderMm * 2);
-                const newCanvas = document.createElement('canvas');
-                newCanvas.width = finalPxW;
-                newCanvas.height = finalPxH;
-                const ctx = newCanvas.getContext('2d');
+                const fw = currentCanvas.width + (borderPx * 2);
+                const fh = currentCanvas.height + (borderPx * 2);
+                const c = document.createElement('canvas');
+                c.width = fw; c.height = fh;
+                const ctx = c.getContext('2d');
                 ctx.fillStyle = '#FFFFFF';
-                ctx.fillRect(0, 0, finalPxW, finalPxH);
-                ctx.drawImage(rawCanvas, borderPx, borderPx, contentPxW, contentPxH);
-                currentCanvas = newCanvas;
+                ctx.fillRect(0, 0, fw, fh);
+                ctx.drawImage(currentCanvas, borderPx, borderPx, currentCanvas.width, currentCanvas.height);
+                currentCanvas = c;
             }
 
             croppedImageData = currentCanvas;
 
             cropInfo.style.display = 'block';
-            cropResultSize.textContent = `${wMm.toFixed(1)} × ${hMm.toFixed(1)} mm`;
-            cropResultPx.textContent = `${currentCanvas.width} × ${currentCanvas.height} px`;
-
-            if (addBorder) {
-                borderResultInfo.style.display = 'block';
-                borderTotalSize.textContent = `${finalWMm.toFixed(1)} × ${finalHMm.toFixed(1)} mm`;
-            } else {
-                borderResultInfo.style.display = 'none';
-            }
+            cropResultSize.textContent = `${wMm.toFixed(1)}×${hMm.toFixed(1)} mm`;
+            cropResultPx.textContent = `${currentCanvas.width}×${currentCanvas.height} px`;
+            if (addBorder) { borderResultInfo.style.display = 'block'; borderTotalSize.textContent = `${(wMm + 1).toFixed(1)}×${(hMm + 1).toFixed(1)} mm`; }
+            else { borderResultInfo.style.display = 'none'; }
 
             isCropLocked = true;
-            if (cropper) {
-                cropper.destroy();
-                cropper = null;
-            }
+            if (cropper) { cropper.destroy(); cropper = null; }
             showCroppedPreview();
             updateCropStatus();
             nextBtn.disabled = false;
 
-            if (page2.classList.contains('active')) {
-                updateArrangeInfo();
-                generateBtn.click();
-            }
+            if (page2.classList.contains('active')) { updateArrangeInfo(); generateBtn.click(); }
         });
 
         // =====================================================
-        //  RESET CROP
+        //  RESET
         // =====================================================
-        function resetCrop() {
+        resetCropBtn.addEventListener('click', function() {
             if (cropper) cropper.destroy();
-            cropper = null;
-            croppedImageData = null;
+            cropper = null; croppedImageData = null; rawCroppedImageData = null;
             isCropLocked = false;
-            cropInfo.style.display = 'none';
-            nextBtn.disabled = true;
-            currentAngle = 0;
-            currentFlipH = false;
-            currentFlipV = false;
+            cropInfo.style.display = 'none'; nextBtn.disabled = true;
+            currentAngle = 0; currentFlipH = false; currentFlipV = false;
             updateRotateIndicators();
-            if (originalImage) {
-                cropImage.src = originalImage.src;
-                cropImage.style.display = 'block';
-                initCropper();
-            }
+            if (originalImage) { cropImage.src = originalImage.src; cropImage.style.display = 'block'; initCropper(); }
             updateCropStatus();
-        }
+        });
 
-        resetCropBtn.addEventListener('click', resetCrop);
-
-        // =====================================================
-        //  RE-CROP
-        // =====================================================
         recropBtn.addEventListener('click', function() {
-            page2.classList.remove('active');
-            page1.classList.add('active');
-            step1.className = 'step-item active';
-            step2.className = 'step-item';
+            page2.classList.remove('active'); page1.classList.add('active');
+            step1.className = 's active'; step2.className = 's';
             if (cropper) cropper.destroy();
-            cropper = null;
-            croppedImageData = null;
+            cropper = null; croppedImageData = null; rawCroppedImageData = null;
             isCropLocked = false;
-            cropInfo.style.display = 'none';
-            nextBtn.disabled = true;
-            if (originalImage) {
-                cropImage.src = originalImage.src;
-                cropImage.style.display = 'block';
-                initCropper();
-            }
+            cropInfo.style.display = 'none'; nextBtn.disabled = true;
+            if (originalImage) { cropImage.src = originalImage.src; cropImage.style.display = 'block'; initCropper(); }
             updateCropStatus();
         });
 
@@ -1455,32 +961,23 @@
         // =====================================================
         nextBtn.addEventListener('click', function() {
             if (!croppedImageData) return;
-            page1.classList.remove('active');
-            page2.classList.add('active');
-            step1.className = 'step-item done';
-            step2.className = 'step-item active';
-            currentAngle = 0;
-            currentFlipH = false;
-            currentFlipV = false;
+            page1.classList.remove('active'); page2.classList.add('active');
+            step1.className = 's done'; step2.className = 's active';
+            currentAngle = 0; currentFlipH = false; currentFlipV = false;
             updateRotateIndicators();
             updateArrangeInfo();
             generateBtn.click();
         });
 
         backToCrop.addEventListener('click', function() {
-            page2.classList.remove('active');
-            page1.classList.add('active');
-            step1.className = 'step-item active';
-            step2.className = 'step-item';
+            page2.classList.remove('active'); page1.classList.add('active');
+            step1.className = 's active'; step2.className = 's';
         });
 
         // =====================================================
         //  UPLOAD
         // =====================================================
-        uploadBox.addEventListener('click', function() {
-            fileInput.click();
-        });
-
+        uploadBox.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', function(e) {
             const file = this.files[0];
             if (!file) return;
@@ -1494,44 +991,32 @@
                     cropImage.src = ev.target.result;
                     cropImage.style.display = 'block';
                     cropArea.style.display = 'block';
-                    currentAngle = 0;
-                    currentFlipH = false;
-                    currentFlipV = false;
+                    currentAngle = 0; currentFlipH = false; currentFlipV = false;
                     updateRotateIndicators();
                     initCropper();
-                    page2.classList.remove('active');
-                    page1.classList.add('active');
-                    step1.className = 'step-item active';
-                    step2.className = 'step-item';
+                    page2.classList.remove('active'); page1.classList.add('active');
+                    step1.className = 's active'; step2.className = 's';
                 };
                 img.src = ev.target.result;
             };
             reader.readAsDataURL(file);
         });
 
-        // DRAG & DROP
-        uploadBox.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            uploadBox.style.borderColor = '#1a237e';
-        });
-        uploadBox.addEventListener('dragleave', function() {
-            uploadBox.style.borderColor = '#90caf9';
-        });
-        uploadBox.addEventListener('drop', function(e) {
+        // Drag & Drop
+        uploadBox.addEventListener('dragover', (e) => { e.preventDefault(); uploadBox.style.borderColor = '#1a237e'; });
+        uploadBox.addEventListener('dragleave', () => { uploadBox.style.borderColor = '#90caf9'; });
+        uploadBox.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadBox.style.borderColor = '#90caf9';
             const file = e.dataTransfer.files[0];
-            if (file) {
-                fileInput.files = e.dataTransfer.files;
-                fileInput.dispatchEvent(new Event('change'));
-            }
+            if (file) { fileInput.files = e.dataTransfer.files; fileInput.dispatchEvent(new Event('change')); }
         });
 
         // =====================================================
-        //  UPDATE ASPECT RATIO
+        //  UPDATE ASPECT
         // =====================================================
-        [cropWidth, cropHeight].forEach(function(el) {
-            el.addEventListener('change', function() {
+        [cropWidth, cropHeight].forEach(el => {
+            el.addEventListener('change', () => {
                 if (cropper && !isCropLocked) {
                     const w = parseFloat(cropWidth.value) || 35;
                     const h = parseFloat(cropHeight.value) || 45;
@@ -1553,9 +1038,8 @@
             const pxH = croppedImageData.height;
             const wMm = (pxW / dpi) * 25.4;
             const hMm = (pxH / dpi) * 25.4;
-            arrangePhotoSize.textContent = `${wMm.toFixed(1)} × ${hMm.toFixed(1)} mm`;
-            const paperWMm = 152.4;
-            const paperHMm = 101.6;
+            arrangePhotoSize.textContent = `${wMm.toFixed(1)}×${hMm.toFixed(1)} mm`;
+            const paperWMm = 152.4, paperHMm = 101.6;
             const cols = Math.floor(paperWMm / wMm);
             const rows = Math.floor(paperHMm / hMm);
             const count = cols * rows;
@@ -1566,254 +1050,173 @@
         // =====================================================
         //  DRAW MARKS
         // =====================================================
-        function drawCuttingMarks(ctx, x, y, w, h, markLen) {
-            const len = markLen || 10;
-            ctx.strokeStyle = '#000000';
+        function drawCuttingMarks(ctx, x, y, w, h, len) {
+            const l = len || 10;
+            ctx.strokeStyle = '#000';
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(x, y + len);
-            ctx.lineTo(x, y);
-            ctx.lineTo(x + len, y);
-            ctx.moveTo(x + w - len, y);
-            ctx.lineTo(x + w, y);
-            ctx.lineTo(x + w, y + len);
-            ctx.moveTo(x, y + h - len);
-            ctx.lineTo(x, y + h);
-            ctx.lineTo(x + len, y + h);
-            ctx.moveTo(x + w - len, y + h);
-            ctx.lineTo(x + w, y + h);
-            ctx.lineTo(x + w, y + h - len);
+            ctx.moveTo(x, y + l); ctx.lineTo(x, y); ctx.lineTo(x + l, y);
+            ctx.moveTo(x + w - l, y); ctx.lineTo(x + w, y); ctx.lineTo(x + w, y + l);
+            ctx.moveTo(x, y + h - l); ctx.lineTo(x, y + h); ctx.lineTo(x + l, y + h);
+            ctx.moveTo(x + w - l, y + h); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w, y + h - l);
             ctx.stroke();
         }
 
         // =====================================================
         //  APPLY ROTATION
         // =====================================================
-        function applyTransformToCanvas(sourceCanvas) {
-            const w = sourceCanvas.width;
-            const h = sourceCanvas.height;
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = w;
-            tempCanvas.height = h;
-            const tempCtx = tempCanvas.getContext('2d');
-            tempCtx.drawImage(sourceCanvas, 0, 0);
-            const angleRad = (currentAngle * Math.PI) / 180;
-            let finalW = w,
-                finalH = h;
-            if (currentAngle % 180 !== 0) { finalW = h;
-                finalH = w; }
-            const resultCanvas = document.createElement('canvas');
-            resultCanvas.width = finalW;
-            resultCanvas.height = finalH;
-            const ctx = resultCanvas.getContext('2d');
+        function applyTransformToCanvas(src) {
+            const w = src.width, h = src.height;
+            const tmp = document.createElement('canvas');
+            tmp.width = w; tmp.height = h;
+            const t = tmp.getContext('2d');
+            t.drawImage(src, 0, 0);
+            const rad = (currentAngle * Math.PI) / 180;
+            let fw = w, fh = h;
+            if (currentAngle % 180 !== 0) { fw = h; fh = w; }
+            const c = document.createElement('canvas');
+            c.width = fw; c.height = fh;
+            const ctx = c.getContext('2d');
             ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(0, 0, finalW, finalH);
+            ctx.fillRect(0, 0, fw, fh);
             ctx.save();
-            ctx.translate(finalW / 2, finalH / 2);
-            ctx.rotate(angleRad);
-            let sx = 1,
-                sy = 1;
+            ctx.translate(fw / 2, fh / 2);
+            ctx.rotate(rad);
+            let sx = 1, sy = 1;
             if (currentFlipH) sx = -1;
             if (currentFlipV) sy = -1;
             ctx.scale(sx, sy);
-            ctx.drawImage(tempCanvas, -w / 2, -h / 2, w, h);
+            ctx.drawImage(tmp, -w / 2, -h / 2, w, h);
             ctx.restore();
-            return resultCanvas;
+            return c;
         }
 
         // =====================================================
         //  GENERATE SHEET
         // =====================================================
         generateBtn.addEventListener('click', function() {
-            if (!croppedImageData) {
-                alert('Please crop the image first!');
-                return;
-            }
+            if (!croppedImageData) { alert('Please crop first!'); return; }
 
             const dpi = parseInt(dpiInput.value) || 300;
             const copies = parseInt(copiesInput.value) || 6;
             const fillMode = fillCheckbox.checked;
-
             const showStrokeVal = showStroke.checked;
             const strokeCol = strokeColor.value;
             const strokeW = parseFloat(strokeWidth.value) || 1;
 
-            const rotatedImage = applyTransformToCanvas(croppedImageData);
+            let rotated = applyTransformToCanvas(croppedImageData);
+            let photoW = rotated.width, photoH = rotated.height;
 
-            let photoW = rotatedImage.width;
-            let photoH = rotatedImage.height;
-
-            const paperPxW = 6 * dpi;
-            const paperPxH = 4 * dpi;
-
-            let wMm = (photoW / dpi) * 25.4;
-            let hMm = (photoH / dpi) * 25.4;
-            const paperWMm = 152.4;
-            const paperHMm = 101.6;
+            const paperPxW = 6 * dpi, paperPxH = 4 * dpi;
+            let wMm = (photoW / dpi) * 25.4, hMm = (photoH / dpi) * 25.4;
+            const paperWMm = 152.4, paperHMm = 101.6;
 
             let cols = Math.floor(paperWMm / wMm);
             let rows = Math.floor(paperHMm / hMm);
             let perSheet = cols * rows;
-
-            let finalPhoto = rotatedImage;
+            let finalPhoto = rotated;
 
             if (fillMode && perSheet < 1) {
-                const tempW = wMm;
-                const tempH = hMm;
+                const tempW = wMm, tempH = hMm;
                 const tempCols = Math.floor(paperWMm / tempH);
                 const tempRows = Math.floor(paperHMm / tempW);
                 const tempPerSheet = tempCols * tempRows;
                 if (tempPerSheet > perSheet) {
-                    const newRotated = document.createElement('canvas');
-                    newRotated.width = photoH;
-                    newRotated.height = photoW;
-                    const ctx = newRotated.getContext('2d');
+                    const c = document.createElement('canvas');
+                    c.width = photoH; c.height = photoW;
+                    const ctx = c.getContext('2d');
                     ctx.save();
-                    ctx.translate(newRotated.width / 2, newRotated.height / 2);
+                    ctx.translate(c.width / 2, c.height / 2);
                     ctx.rotate(Math.PI / 2);
-                    ctx.drawImage(rotatedImage, -photoW / 2, -photoH / 2);
+                    ctx.drawImage(rotated, -photoW / 2, -photoH / 2);
                     ctx.restore();
-                    finalPhoto = newRotated;
-                    photoW = finalPhoto.width;
-                    photoH = finalPhoto.height;
-                    wMm = (photoW / dpi) * 25.4;
-                    hMm = (photoH / dpi) * 25.4;
+                    finalPhoto = c;
+                    photoW = finalPhoto.width; photoH = finalPhoto.height;
+                    wMm = (photoW / dpi) * 25.4; hMm = (photoH / dpi) * 25.4;
                     cols = Math.floor(paperWMm / wMm);
                     rows = Math.floor(paperHMm / hMm);
                     perSheet = cols * rows;
                 }
             }
 
-            if (perSheet < 1) {
-                alert('Photo is too large for 6×4 paper!');
-                return;
-            }
+            if (perSheet < 1) { alert('Photo too large!'); return; }
 
             outputCanvas.width = paperPxW;
             outputCanvas.height = paperPxH;
             const ctx = outputCanvas.getContext('2d');
-
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, paperPxW, paperPxH);
 
-            const marginX = (paperPxW - (cols * photoW)) / (cols + 1);
-            const marginY = (paperPxH - (rows * photoH)) / (rows + 1);
+            const mx = (paperPxW - (cols * photoW)) / (cols + 1);
+            const my = (paperPxH - (rows * photoH)) / (rows + 1);
 
             let drawn = 0;
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (drawn >= copies) break;
-                    const x = marginX + c * (photoW + marginX);
-                    const y = marginY + r * (photoH + marginY);
-
+                    const x = mx + c * (photoW + mx);
+                    const y = my + r * (photoH + my);
                     ctx.drawImage(finalPhoto, x, y, photoW, photoH);
-
                     if (showStrokeVal && strokeW > 0) {
                         ctx.strokeStyle = strokeCol;
                         ctx.lineWidth = strokeW;
                         ctx.strokeRect(x, y, photoW, photoH);
                     }
-
                     if (showCutMarks.checked) {
-                        const markLen = Math.min(photoW, photoH) * 0.10;
-                        drawCuttingMarks(ctx, x, y, photoW, photoH, markLen);
+                        const ml = Math.min(photoW, photoH) * 0.10;
+                        drawCuttingMarks(ctx, x, y, photoW, photoH, ml);
                     }
-
                     drawn++;
                 }
                 if (drawn >= copies) break;
             }
 
-            canvasSizeInfo.textContent = `6 × 4 inch · ${dpi} DPI · ${copies} copies (${perSheet} per sheet)`;
+            canvasSizeInfo.textContent = `6×4 inch · ${dpi} DPI · ${copies} copies (${perSheet}/sheet)`;
             perSheetCount.textContent = perSheet;
         });
 
         // =====================================================
         //  ROTATE FUNCTIONS
         // =====================================================
-        function rotateImage(degrees) {
-            currentAngle = (currentAngle + degrees) % 360;
+        function rotateImage(deg) {
+            currentAngle = (currentAngle + deg) % 360;
             if (currentAngle < 0) currentAngle += 360;
             updateRotateIndicators();
-            if (croppedImageData && page2.classList.contains('active')) {
-                generateBtn.click();
-            }
+            if (croppedImageData && page2.classList.contains('active')) generateBtn.click();
         }
-
-        rotateLeftBtn.addEventListener('click', function() { rotateImage(-90); });
-        rotateRightBtn.addEventListener('click', function() { rotateImage(90); });
-
-        flipHBtn.addEventListener('click', function() {
-            currentFlipH = !currentFlipH;
-            updateRotateIndicators();
-            if (croppedImageData && page2.classList.contains('active')) generateBtn.click();
-        });
-
-        flipVBtn.addEventListener('click', function() {
-            currentFlipV = !currentFlipV;
-            updateRotateIndicators();
-            if (croppedImageData && page2.classList.contains('active')) generateBtn.click();
-        });
-
-        resetRotateBtn.addEventListener('click', function() {
-            currentAngle = 0;
-            currentFlipH = false;
-            currentFlipV = false;
-            updateRotateIndicators();
-            if (croppedImageData && page2.classList.contains('active')) generateBtn.click();
-        });
+        rotateLeftBtn.addEventListener('click', () => rotateImage(-90));
+        rotateRightBtn.addEventListener('click', () => rotateImage(90));
+        flipHBtn.addEventListener('click', () => { currentFlipH = !currentFlipH; updateRotateIndicators(); if (croppedImageData && page2.classList.contains('active')) generateBtn.click(); });
+        flipVBtn.addEventListener('click', () => { currentFlipV = !currentFlipV; updateRotateIndicators(); if (croppedImageData && page2.classList.contains('active')) generateBtn.click(); });
+        resetRotateBtn.addEventListener('click', () => { currentAngle = 0; currentFlipH = false; currentFlipV = false; updateRotateIndicators(); if (croppedImageData && page2.classList.contains('active')) generateBtn.click(); });
 
         // =====================================================
         //  PRINT
         // =====================================================
         printBtn.addEventListener('click', function() {
-            if (!outputCanvas.width || !outputCanvas.height) {
-                alert('Please generate the sheet first!');
-                return;
-            }
+            if (!outputCanvas.width || !outputCanvas.height) { alert('Generate first!'); return; }
             const dataUrl = outputCanvas.toDataURL('image/jpeg', 0.98);
             printImage.src = dataUrl;
-            const printSheet = document.querySelector('.print-sheet');
-            printSheet.style.display = 'block';
-            printImage.onload = function() {
-                window.print();
-                setTimeout(function() {
-                    printSheet.style.display = 'none';
-                }, 1000);
-            };
-            if (printImage.complete) {
-                window.print();
-                setTimeout(function() {
-                    printSheet.style.display = 'none';
-                }, 1000);
-            }
+            const ps = document.querySelector('.print-sheet');
+            ps.style.display = 'block';
+            printImage.onload = function() { window.print(); setTimeout(() => ps.style.display = 'none', 1000); };
+            if (printImage.complete) { window.print(); setTimeout(() => ps.style.display = 'none', 1000); }
         });
 
         // =====================================================
         //  SHARE
         // =====================================================
         shareBtn.addEventListener('click', function() {
-            if (!outputCanvas.width || !outputCanvas.height) {
-                alert('Please generate the sheet first!');
-                return;
-            }
+            if (!outputCanvas.width || !outputCanvas.height) { alert('Generate first!'); return; }
             outputCanvas.toBlob(function(blob) {
                 if (navigator.share) {
-                    navigator.share({
-                        title: 'Passport Photo Sheet',
-                        text: 'Passport photo sheet - 6×4 inch',
-                        files: [new File([blob], 'passport_sheet.png', { type: 'image/png' })]
-                    }).catch(function(err) {
-                        if (err.name !== 'AbortError') {
-                            alert('Share cancelled or not supported.');
-                        }
-                    });
+                    navigator.share({ title: 'Passport Sheet', files: [new File([blob], 'passport.png', { type: 'image/png' })] })
+                        .catch(() => {});
                 } else {
                     const link = document.createElement('a');
-                    link.download = 'passport_sheet.png';
+                    link.download = 'passport.png';
                     link.href = outputCanvas.toDataURL('image/png');
                     link.click();
-                    alert('📤 Share not supported. Image downloaded.');
                 }
             });
         });
@@ -1822,10 +1225,7 @@
         //  DOWNLOADS
         // =====================================================
         downloadPngBtn.addEventListener('click', function() {
-            if (!outputCanvas.width || !outputCanvas.height) {
-                alert('Please generate the sheet first!');
-                return;
-            }
+            if (!outputCanvas.width || !outputCanvas.height) { alert('Generate first!'); return; }
             const link = document.createElement('a');
             link.download = 'passport_sheet.png';
             link.href = outputCanvas.toDataURL('image/png');
@@ -1833,10 +1233,7 @@
         });
 
         downloadPdfBtn.addEventListener('click', function() {
-            if (!outputCanvas.width || !outputCanvas.height) {
-                alert('Please generate the sheet first!');
-                return;
-            }
+            if (!outputCanvas.width || !outputCanvas.height) { alert('Generate first!'); return; }
             const { jsPDF } = window.jspdf;
             const imgData = outputCanvas.toDataURL('image/jpeg', 0.95);
             const pdf = new jsPDF({ orientation: 'landscape', unit: 'in', format: [6, 4] });
@@ -1849,53 +1246,42 @@
         // =====================================================
         resetAllBtn.addEventListener('click', function() {
             if (cropper) cropper.destroy();
-            cropper = null;
-            croppedImageData = null;
+            cropper = null; croppedImageData = null; rawCroppedImageData = null;
             originalImage = null;
-            isCropLocked = false;
-            currentAngle = 0;
-            currentFlipH = false;
-            currentFlipV = false;
-            previewImg.style.display = 'none';
-            cropImage.src = '';
-            cropArea.style.display = 'none';
-            page2.classList.remove('active');
-            page1.classList.add('active');
-            step1.className = 'step-item active';
-            step2.className = 'step-item';
-            fileInput.value = '';
-            cropInfo.style.display = 'none';
-            outputCanvas.width = 0;
-            outputCanvas.height = 0;
-            updateRotateIndicators();
-            updateCropStatus();
-            nextBtn.disabled = true;
-            lockedStatus.style.display = 'none';
+            isCropLocked = false; currentAngle = 0; currentFlipH = false; currentFlipV = false;
+            previewImg.style.display = 'none'; cropImage.src = ''; cropArea.style.display = 'none';
+            page2.classList.remove('active'); page1.classList.add('active');
+            step1.className = 's active'; step2.className = 's';
+            fileInput.value = ''; cropInfo.style.display = 'none';
+            outputCanvas.width = 0; outputCanvas.height = 0;
+            updateRotateIndicators(); updateCropStatus();
+            nextBtn.disabled = true; lockedStatus.style.display = 'none';
+            previewHint.textContent = '👆 Upload image';
+            // Reset inner border
+            innerBorderToggle.checked = false;
+            innerBorderSlider.value = 0;
+            innerBorderValue.textContent = '0.0 mm';
+            innerBorderSliderGroup.style.opacity = '0.4';
+            innerBorderSliderGroup.style.pointerEvents = 'none';
+            innerBorderInfoText.textContent = 'Off';
             document.querySelector('.print-sheet').style.display = 'none';
-            previewHint.textContent = '👆 Upload an image to start';
         });
 
         // =====================================================
         //  REGENERATE ON CHANGE
         // =====================================================
-        [showCutMarks, showStroke, strokeColor, strokeWidth, copiesInput, fillCheckbox].forEach(function(el) {
+        [showCutMarks, showStroke, strokeColor, strokeWidth, copiesInput, fillCheckbox].forEach(el => {
             el.addEventListener('change', function() {
-                if (croppedImageData && page2.classList.contains('active')) {
-                    generateBtn.click();
-                }
+                if (croppedImageData && page2.classList.contains('active')) generateBtn.click();
             });
             if (el.tagName === 'INPUT' && el.type === 'number') {
                 el.addEventListener('input', function() {
-                    if (croppedImageData && page2.classList.contains('active')) {
-                        generateBtn.click();
-                    }
+                    if (croppedImageData && page2.classList.contains('active')) generateBtn.click();
                 });
             }
             if (el.tagName === 'INPUT' && el.type === 'color') {
                 el.addEventListener('input', function() {
-                    if (croppedImageData && page2.classList.contains('active')) {
-                        generateBtn.click();
-                    }
+                    if (croppedImageData && page2.classList.contains('active')) generateBtn.click();
                 });
             }
         });
