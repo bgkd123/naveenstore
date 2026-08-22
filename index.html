@@ -28,40 +28,82 @@
             overflow-x: hidden;
         }
 
-        /* ===== FULL SCREEN SPLASH ===== */
-        #splash {
+        /* ===== WELCOME SCREEN ===== */
+        #welcomeScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0d0d0d; display: flex; justify-content: center; align-items: center;
-            z-index: 9999; transition: opacity 0.6s ease;
-            overflow: hidden;
+            background: linear-gradient(135deg, #0d47a1, #1a237e);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 10000;
+            transition: opacity 0.8s ease;
         }
-        #splash.hide { opacity: 0; pointer-events: none; }
-        #splash video {
+        #welcomeScreen.hidden { opacity: 0; pointer-events: none; }
+        .welcome-box {
+            text-align: center; color: white; padding: 30px; max-width: 450px;
+        }
+        .welcome-box .logo { font-size: 72px; }
+        .welcome-box h1 {
+            font-size: 38px; font-weight: 700; letter-spacing: 3px; margin: 8px 0;
+        }
+        .welcome-box h1 span { color: #ffd54f; }
+        .welcome-box .tagline {
+            font-size: 14px; color: #90caf9; margin-bottom: 15px;
+        }
+        .welcome-box .features {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+        }
+        .welcome-box .features span {
+            background: rgba(255,255,255,0.1); padding: 4px 14px;
+            border-radius: 20px; font-size: 12px; color: #90caf9;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .welcome-box .btn-continue {
+            margin-top: 25px; padding: 14px 50px; border: none; border-radius: 50px;
+            background: #ffd54f; color: #1a237e; font-size: 18px; font-weight: 700;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 4px 20px rgba(255,213,79,0.3);
+        }
+        .welcome-box .btn-continue:hover {
+            transform: scale(1.05); box-shadow: 0 6px 30px rgba(255,213,79,0.5);
+        }
+        .welcome-box .credit {
+            font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 20px;
+        }
+
+        /* ===== FULL SCREEN SPLASH ===== */
+        #splashScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0d0d0d; display: none; justify-content: center; align-items: center;
+            z-index: 9999; overflow: hidden;
+        }
+        #splashScreen.show { display: flex; }
+        #splashScreen.hide { opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+        #splashScreen video {
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
             object-fit: cover;
             z-index: 1;
         }
-        #splash .overlay {
+        #splashScreen .overlay {
             position: relative; z-index: 2;
             text-align: center; color: white;
-            padding: 20px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 16px;
-            backdrop-filter: blur(4px);
             padding: 30px 40px;
+            background: rgba(0,0,0,0.25);
+            border-radius: 16px;
+            backdrop-filter: blur(3px);
         }
-        #splash .overlay .logo { font-size: 56px; }
-        #splash .overlay h1 { font-size: 30px; font-weight: 700; letter-spacing: 2px; margin: 6px 0; }
-        #splash .overlay h1 span { color: #ffd54f; }
-        #splash .overlay p { color: #90caf9; font-size: 14px; }
-        #splash .overlay .loader {
+        #splashScreen .overlay .logo { font-size: 48px; }
+        #splashScreen .overlay h2 {
+            font-size: 26px; font-weight: 700; letter-spacing: 2px;
+        }
+        #splashScreen .overlay h2 span { color: #ffd54f; }
+        #splashScreen .overlay .loader {
             width: 28px; height: 28px; margin: 12px auto;
             border: 3px solid rgba(255,255,255,0.1);
             border-top-color: #ffd54f; border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        #splash .overlay .timer { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 6px; }
+        #splashScreen .overlay .timer {
+            font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ===== INSTALL BANNER ===== */
@@ -279,8 +321,10 @@
             .upload h3 { font-size: 15px; }
             .action-grid .btn { min-width: 60px; font-size: 12px; padding: 6px 12px; }
             .copy-buttons .btn { font-size: 12px; padding: 6px 10px; }
-            #splash .overlay { padding: 20px; }
-            #splash .overlay h1 { font-size: 24px; }
+            #splashScreen .overlay { padding: 20px; }
+            #splashScreen .overlay h2 { font-size: 20px; }
+            .welcome-box h1 { font-size: 28px; }
+            .welcome-box .logo { font-size: 56px; }
             .ctrl-row select { max-width: 60px; }
         }
 
@@ -294,21 +338,43 @@
 </head>
 <body>
 
-    <!-- ===== FULL SCREEN SPLASH ===== -->
-    <div id="splash">
-        <video id="splashVideo" autoplay muted playsinline>
+    <!-- ============================================ -->
+    <!-- WELCOME SCREEN                               -->
+    <!-- ============================================ -->
+    <div id="welcomeScreen">
+        <div class="welcome-box">
+            <div class="logo">📸</div>
+            <h1>NAVEEN <span>STORE</span></h1>
+            <div class="tagline">✦ Passport Photo Studio ✦</div>
+            <div class="features">
+                <span>📐 35×45mm</span>
+                <span>🖼️ 300 DPI</span>
+                <span>✂️ Precision Crop</span>
+                <span>📋 6×4 Sheet</span>
+            </div>
+            <button class="btn-continue" id="continueBtn">➡️ Continue</button>
+            <div class="credit">Created by Sanil</div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- FULL SCREEN SPLASH WITH VIDEO                -->
+    <!-- ============================================ -->
+    <div id="splashScreen">
+        <video id="splashVideo" autoplay playsinline>
             <source src="pasplash.webm" type="video/webm">
         </video>
         <div class="overlay">
             <div class="logo">📸</div>
-            <h1>NAVEEN <span>STORE</span></h1>
-            <p>Passport Photo Studio</p>
+            <h2>NAVEEN <span>STORE</span></h2>
             <div class="loader"></div>
             <div class="timer" id="splashTimer">⏱️ 10s</div>
         </div>
     </div>
 
-    <!-- ===== INSTALL ===== -->
+    <!-- ============================================ -->
+    <!-- INSTALL BANNER                               -->
+    <!-- ============================================ -->
     <div id="install">
         <span>📸</span>
         <span style="font-size:13px;">Install <strong>NAVEEN STORE</strong></span>
@@ -316,7 +382,9 @@
         <button class="close" id="installClose">✕</button>
     </div>
 
-    <!-- ===== APP ===== -->
+    <!-- ============================================ -->
+    <!-- APP                                          -->
+    <!-- ============================================ -->
     <div class="app" id="app">
 
         <!-- HEADER -->
@@ -556,38 +624,114 @@
         });
 
         // =====================================================
-        //  FULL SCREEN SPLASH
+        //  WELCOME → SPLASH VIDEO WITH SOUND → APP
         // =====================================================
-        const splash = document.getElementById('splash');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const continueBtn = document.getElementById('continueBtn');
+        const splashScreen = document.getElementById('splashScreen');
         const splashVideo = document.getElementById('splashVideo');
         const splashTimer = document.getElementById('splashTimer');
         const app = document.getElementById('app');
 
-        let splashDone = false;
+        let splashHidden = false;
+        let timerStarted = false;
+        let videoEnded = false;
 
-        function showApp() {
-            if (splashDone) return;
-            splashDone = true;
-            splash.classList.add('hide');
-            app.classList.add('show');
-            setTimeout(() => splash.style.display = 'none', 600);
+        // ===== CONTINUE BUTTON =====
+        continueBtn.addEventListener('click', function() {
+            // Hide welcome
+            welcomeScreen.classList.add('hidden');
+            
+            // Show splash with video
+            splashScreen.classList.add('show');
+            
+            // ===== PLAY VIDEO WITH SOUND =====
+            splashVideo.muted = false;
+            splashVideo.play().then(function() {
+                console.log('Video playing with sound');
+            }).catch(function(error) {
+                console.log('Autoplay with sound blocked, trying muted');
+                splashVideo.muted = true;
+                splashVideo.play();
+                // Show sound hint
+                splashTimer.textContent = '🔊 Click for sound';
+                setTimeout(() => {
+                    if (!splashHidden) splashTimer.textContent = '⏱️ 10s';
+                }, 2000);
+            });
+
+            // ===== VIDEO ENDS → SHOW APP =====
+            splashVideo.addEventListener('ended', function() {
+                videoEnded = true;
+                if (!splashHidden) {
+                    splashTimer.textContent = '✅ Ready!';
+                    showApp();
+                }
+            });
+
+            // ===== VIDEO ERROR (fallback) =====
+            splashVideo.addEventListener('error', function() {
+                console.log('Video error, using timer');
+                if (!splashHidden && !timerStarted) {
+                    startTimer();
+                }
+            });
+
+            // ===== START TIMER (10s) =====
+            startTimer();
+        });
+
+        // ===== TIMER =====
+        function startTimer() {
+            if (timerStarted) return;
+            timerStarted = true;
+            let seconds = 10;
+            splashTimer.textContent = `⏱️ ${seconds}s`;
+            const interval = setInterval(function() {
+                seconds--;
+                if (seconds > 0) {
+                    splashTimer.textContent = `⏱️ ${seconds}s`;
+                } else {
+                    clearInterval(interval);
+                    splashTimer.textContent = '✅ Ready!';
+                    // If video hasn't ended yet, force show app
+                    if (!videoEnded && !splashHidden) {
+                        showApp();
+                    }
+                }
+            }, 1000);
         }
 
-        splashVideo.muted = false;
-        splashVideo.play().catch(() => { console.log('Autoplay blocked'); });
+        // ===== SHOW APP =====
+        function showApp() {
+            if (splashHidden) return;
+            splashHidden = true;
+            
+            setTimeout(function() {
+                splashScreen.classList.remove('show');
+                splashScreen.style.display = 'none';
+                app.classList.add('show');
+                splashVideo.pause();
+                
+                // Show install banner after app loads
+                setTimeout(function() {
+                    if (deferredPrompt) {
+                        installBanner.classList.add('show');
+                    }
+                }, 1000);
+            }, 500);
+        }
 
-        let t = 10;
-        splashTimer.textContent = `⏱️ ${t}s`;
-        const interval = setInterval(() => {
-            t--;
-            if (t > 0) splashTimer.textContent = `⏱️ ${t}s`;
-            else { clearInterval(interval);
-                splashTimer.textContent = '✅';
-                showApp(); }
-        }, 1000);
-
-        splashVideo.addEventListener('ended', () => {
-            if (!splashDone) showApp();
+        // ===== Click on splash to enable sound =====
+        splashScreen.addEventListener('click', function() {
+            splashVideo.muted = false;
+            splashVideo.play().catch(function(e) {
+                console.log('Still cannot play with sound');
+            });
+            splashTimer.textContent = '🔊 Sound ON';
+            setTimeout(() => {
+                if (!splashHidden && !videoEnded) splashTimer.textContent = '⏱️ 10s';
+            }, 1500);
         });
 
         // =====================================================
@@ -609,7 +753,6 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            setTimeout(() => installBanner.classList.add('show'), 1500);
         });
 
         installBtn.addEventListener('click', () => {
@@ -853,7 +996,6 @@
             const hVal = parseFloat(cropHeight.value) || 45;
             const unit = unitSelect.value;
 
-            // Convert both using same unit
             const wMm = getUnitToMm(wVal, unit);
             const hMm = getUnitToMm(hVal, unit);
 
