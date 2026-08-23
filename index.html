@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NAVEEN STORE - Passport Maker</title>
     
-    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,7 +13,6 @@
     <link rel="icon" type="image/png" sizes="192x192" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
     
-    <!-- Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
@@ -28,7 +26,6 @@
             overflow-x: hidden;
         }
 
-        /* ===== ANIMATED BACKGROUND ===== */
         .bg-animation {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -43,7 +40,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* ===== PARTICLES ===== */
         .particles {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -66,7 +62,6 @@
             100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
         }
 
-        /* ===== SOUND INDICATOR ===== */
         .sound-indicator {
             position: fixed; bottom: 80px; right: 20px;
             background: rgba(0,0,0,0.5); padding: 8px 14px;
@@ -78,11 +73,38 @@
             cursor: pointer;
             transition: 0.3s;
         }
-        .sound-indicator:hover {
-            color: #fff;
-            border-color: rgba(255,213,79,0.3);
-        }
+        .sound-indicator:hover { color: #fff; border-color: rgba(255,213,79,0.3); }
         .sound-indicator.show { display: block; }
+
+        /* ===== IDLE VIDEO OVERLAY ===== */
+        #idleVideoOverlay {
+            position: fixed;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9996;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            width: 200px;
+            height: auto;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.3);
+        }
+        #idleVideoOverlay.show {
+            opacity: 1;
+        }
+        #idleVideoOverlay.hide {
+            opacity: 0;
+        }
+        #idleVideoOverlay video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 16px;
+        }
 
         /* ===== WELCOME SCREEN ===== */
         #welcomeScreen {
@@ -151,7 +173,6 @@
             box-shadow: 0 0 50px rgba(255, 213, 79, 0.5);
         }
 
-        /* ===== WELCOME FOOTER ===== */
         .welcome-footer {
             position: absolute;
             bottom: 30px;
@@ -162,12 +183,8 @@
             font-weight: 300;
             letter-spacing: 1.5px;
             color: rgba(255,255,255,0.2);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        .welcome-footer strong {
-            color: rgba(255,255,255,0.3);
-            font-weight: 400;
-        }
+        .welcome-footer strong { color: rgba(255,255,255,0.3); font-weight: 400; }
 
         /* ===== SPLASH ===== */
         #splashScreen {
@@ -302,10 +319,7 @@
             border-color: rgba(255,213,79,0.3);
         }
         .steps .step.done { color: rgba(255,255,255,0.6); }
-        .steps .step.done .num {
-            background: #2e7d32;
-            color: #fff;
-        }
+        .steps .step.done .num { background: #2e7d32; color: #fff; }
         .steps .step .line { width: 25px; height: 2px; background: rgba(255,255,255,0.1); }
 
         /* ===== PAGES ===== */
@@ -370,10 +384,7 @@
         .ctrl-row select option { background: #1a1a3e; }
 
         .chk { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
-        .chk input[type="checkbox"] {
-            width: 16px; height: 16px; accent-color: #ffd54f;
-            cursor: pointer;
-        }
+        .chk input[type="checkbox"] { width: 16px; height: 16px; accent-color: #ffd54f; cursor: pointer; }
         .chk label { font-size: 13px; color: rgba(255,255,255,0.7); cursor: pointer; }
 
         /* ===== SLIDER ===== */
@@ -428,50 +439,32 @@
             background: linear-gradient(135deg, #1a237e, #0d47a1);
             color: white; box-shadow: 0 0 20px rgba(26, 35, 126, 0.3);
         }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 40px rgba(26, 35, 126, 0.5);
-        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(26, 35, 126, 0.5); }
         .btn-success {
             background: linear-gradient(135deg, #2e7d32, #1b5e20);
             color: white; box-shadow: 0 0 20px rgba(46, 125, 50, 0.3);
         }
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 40px rgba(46, 125, 50, 0.5);
-        }
+        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(46, 125, 50, 0.5); }
         .btn-warning {
             background: linear-gradient(135deg, #f57c00, #e65100);
             color: white; box-shadow: 0 0 20px rgba(245, 124, 0, 0.3);
         }
-        .btn-warning:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 40px rgba(245, 124, 0, 0.5);
-        }
+        .btn-warning:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(245, 124, 0, 0.5); }
         .btn-danger {
             background: linear-gradient(135deg, #c62828, #b71c1c);
             color: white; box-shadow: 0 0 20px rgba(198, 40, 40, 0.3);
         }
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 40px rgba(198, 40, 40, 0.5);
-        }
+        .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(198, 40, 40, 0.5); }
         .btn-outline {
             background: transparent; color: #fff;
             border: 1px solid rgba(255,255,255,0.2);
         }
-        .btn-outline:hover {
-            background: rgba(255,255,255,0.05);
-            border-color: #ffd54f;
-        }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: #ffd54f; }
         .btn-info {
             background: linear-gradient(135deg, #0288d1, #0277bd);
             color: white; box-shadow: 0 0 20px rgba(2, 136, 209, 0.3);
         }
-        .btn-info:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 40px rgba(2, 136, 209, 0.5);
-        }
+        .btn-info:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(2, 136, 209, 0.5); }
         .btn-sm { padding: 5px 12px; font-size: 12px; }
         .btn-block { width: 100%; justify-content: center; }
         .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
@@ -482,7 +475,6 @@
         .copy-buttons { display: flex; gap: 8px; margin-top: 8px; }
         .copy-buttons .btn { flex: 1; }
 
-        /* ===== ROTATE ===== */
         .rotate-group { display: flex; gap: 4px; flex-wrap: wrap; }
         .rotate-group .btn { flex: 1; min-width: 40px; padding: 5px 8px; font-size: 12px; }
 
@@ -495,9 +487,7 @@
         }
         .img-wrap.crop-active { border-color: #1a237e; }
         .img-wrap.crop-locked { border-color: #2e7d32; border-width: 3px; }
-        #cropImage {
-            max-width: 100%; max-height: 380px; display: block; object-fit: contain;
-        }
+        #cropImage { max-width: 100%; max-height: 380px; display: block; object-fit: contain; }
 
         .status {
             display: flex; justify-content: space-between; align-items: center; margin-top: 8px;
@@ -509,11 +499,7 @@
         .tag.idle { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.05); }
 
         .sheet-preview { margin-top: 12px; text-align: center; }
-        .sheet-preview canvas {
-            max-width: 100%; border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.05);
-            max-height: 400px;
-        }
+        .sheet-preview canvas { max-width: 100%; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); max-height: 400px; }
         .sheet-preview .info { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 4px; }
 
         .info-box {
@@ -529,14 +515,12 @@
         }
         .action-grid .btn { flex: 1; min-width: 70px; }
 
-        /* ===== PAGE NAV ===== */
         .page-nav {
             display: flex; justify-content: space-between; align-items: center;
             flex-wrap: wrap; gap: 10px; margin-bottom: 14px;
         }
         .page-nav .title { font-weight: 600; color: #90caf9; font-size: 16px; }
 
-        /* ===== FOOTER ===== */
         .app-footer {
             text-align: center;
             padding: 20px 0 8px;
@@ -546,14 +530,9 @@
             color: rgba(255,255,255,0.2);
             border-top: 1px solid rgba(255,255,255,0.03);
             margin-top: 18px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        .app-footer strong {
-            color: rgba(255,255,255,0.3);
-            font-weight: 400;
-        }
+        .app-footer strong { color: rgba(255,255,255,0.3); font-weight: 400; }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 600px) {
             .app { padding: 10px; }
             .header { padding: 12px 16px; flex-wrap: wrap; gap: 8px; justify-content: center; }
@@ -576,14 +555,10 @@
             .ctrl-row select { max-width: 60px; }
             .page-nav { flex-direction: column; align-items: stretch; text-align: center; }
             .welcome-footer { bottom: 20px; font-size: 10px; }
+            #idleVideoOverlay { width: 150px; bottom: 40px; }
         }
 
-        .no-select {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
+        .no-select { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
     </style>
 </head>
 <body>
@@ -594,6 +569,13 @@
 
     <!-- ===== SOUND INDICATOR ===== -->
     <div class="sound-indicator" id="soundIndicator">🔊 Sound ON</div>
+
+    <!-- ===== IDLE VIDEO OVERLAY ===== -->
+    <div id="idleVideoOverlay" class="hide">
+        <video id="idleVideo" muted loop playsinline preload="auto">
+            <source src="createdby.webm" type="video/webm">
+        </video>
+    </div>
 
     <!-- ============================================ -->
     <!-- WELCOME SCREEN                               -->
@@ -683,7 +665,6 @@
                 <div id="cropArea" style="display:none;">
                     <div class="row">
                         <div class="col">
-                            <!-- Crop Settings -->
                             <div class="panel">
                                 <div class="label">📐 Size</div>
                                 <div class="ctrl-row">
@@ -737,9 +718,7 @@
                     </div>
                 </div>
 
-                <!-- FOOTER PAGE 1 -->
                 <div class="app-footer">Created by <strong>Sanil</strong></div>
-
             </div>
         </div>
 
@@ -757,7 +736,6 @@
                 <div class="row">
                     <div class="col">
 
-                        <!-- Copies -->
                         <div class="panel">
                             <div class="label">📋 Copies</div>
                             <div class="ctrl-row">
@@ -775,7 +753,6 @@
                             </div>
                         </div>
 
-                        <!-- Marks -->
                         <div class="panel">
                             <div class="label">✂️ Marks</div>
                             <div class="chk"><input type="checkbox" id="showCutMarks"><label for="showCutMarks">Cutting marks</label></div>
@@ -788,7 +765,6 @@
                             </div>
                         </div>
 
-                        <!-- Inner Border -->
                         <div class="panel">
                             <div class="label">⬜ Inner Border</div>
                             <div class="chk"><input type="checkbox" id="innerBorderToggle"><label for="innerBorderToggle">Enable</label></div>
@@ -802,7 +778,6 @@
                             </div>
                         </div>
 
-                        <!-- Rotate -->
                         <div class="panel">
                             <div class="label">🔄 Rotate / Flip</div>
                             <div class="rotate-group">
@@ -823,20 +798,17 @@
 
                     <div class="col">
 
-                        <!-- Preview -->
                         <div class="sheet-preview" id="previewContainer">
                             <canvas id="outputCanvas"></canvas>
                             <div class="info" id="canvasSizeInfo">6×4 inch · 300 DPI</div>
                         </div>
 
-                        <!-- Info -->
                         <div class="info-box">
                             <span>📐 <strong id="arrangePhotoSize">35×45 mm</strong></span>
                             <span>📋 <strong id="arrangeCount">0</strong>/sheet</span>
                             <span style="display:block;font-size:12px;color:rgba(255,255,255,0.3);" id="innerBorderInfo">⬜ Inner: <span id="innerBorderInfoText">2.0 mm</span></span>
                         </div>
 
-                        <!-- Actions -->
                         <div class="action-grid">
                             <button class="btn btn-info" id="printBtn">🖨️ Print</button>
                             <button class="btn btn-primary" id="shareBtn">📤 Share</button>
@@ -848,9 +820,7 @@
                     </div>
                 </div>
 
-                <!-- FOOTER PAGE 2 -->
                 <div class="app-footer">Created by <strong>Sanil</strong></div>
-
             </div>
         </div>
 
@@ -863,9 +833,73 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
-        // ===== ALL JAVASCRIPT (SAME AS BEFORE - KEPT COMPLETE) =====
-        // ... (Full JavaScript code from previous version)
-        // I'll include the full JS to ensure everything works
+        // =====================================================
+        //  IDLE VIDEO - 10 SECONDS INACTIVITY (FIXED)
+        // =====================================================
+        const idleVideoOverlay = document.getElementById('idleVideoOverlay');
+        const idleVideo = document.getElementById('idleVideo');
+        let idleTimer = null;
+        let isVideoVisible = false;
+
+        function showIdleVideo() {
+            if (!isVideoVisible) {
+                idleVideoOverlay.classList.remove('hide');
+                idleVideoOverlay.classList.add('show');
+                isVideoVisible = true;
+                // ===== FIX: Reload and play video =====
+                idleVideo.load();
+                idleVideo.play().then(() => {
+                    console.log('Idle Video: Playing');
+                }).catch((error) => {
+                    console.log('Idle Video Error:', error);
+                    // Fallback: try muted
+                    idleVideo.muted = true;
+                    idleVideo.play().catch(() => {});
+                });
+            }
+        }
+
+        function hideIdleVideo() {
+            if (isVideoVisible) {
+                idleVideoOverlay.classList.remove('show');
+                idleVideoOverlay.classList.add('hide');
+                isVideoVisible = false;
+                idleVideo.pause();
+                resetIdleTimer();
+            }
+        }
+
+        function resetIdleTimer() {
+            if (idleTimer) {
+                clearTimeout(idleTimer);
+                idleTimer = null;
+            }
+            // Show video after 10 seconds of inactivity
+            idleTimer = setTimeout(function() {
+                if (app.classList.contains('show')) {
+                    showIdleVideo();
+                }
+            }, 10000);
+        }
+
+        // ===== DETECT USER ACTIVITY =====
+        function handleUserActivity() {
+            hideIdleVideo();
+        }
+
+        // Listen to all events
+        document.addEventListener('click', handleUserActivity);
+        document.addEventListener('touchstart', handleUserActivity);
+        document.addEventListener('keydown', handleUserActivity);
+        document.addEventListener('scroll', handleUserActivity);
+        document.addEventListener('mousemove', handleUserActivity);
+
+        // Buttons and inputs
+        document.querySelectorAll('button, input, select, .upload, .btn, .chk input').forEach(el => {
+            el.addEventListener('click', handleUserActivity);
+            el.addEventListener('change', handleUserActivity);
+            el.addEventListener('input', handleUserActivity);
+        });
 
         // =====================================================
         //  PARTICLES
@@ -935,6 +969,7 @@
             soundEnabled = !soundEnabled;
             this.textContent = soundEnabled ? '🔊 Sound ON' : '🔇 Sound OFF';
             if (soundEnabled && !audioCtx) audioCtx = new AudioContext();
+            handleUserActivity();
         });
         setTimeout(() => soundIndicator.classList.add('show'), 2000);
 
@@ -1004,7 +1039,11 @@
                 splashScreen.style.display = 'none';
                 app.classList.add('show');
                 splashVideo.pause();
-                setTimeout(function() { if (deferredPrompt) installBanner.classList.add('show'); }, 1000);
+                setTimeout(function() { 
+                    if (deferredPrompt) installBanner.classList.add('show'); 
+                }, 1000);
+                // Start idle timer for video
+                resetIdleTimer();
             }, 500);
         }
 
@@ -1013,6 +1052,7 @@
             splashVideo.play().catch(() => {});
             splashTimer.textContent = '🔊 Sound ON';
             setTimeout(() => { if (!splashHidden && !videoEnded) splashTimer.textContent = '⏱️ 10s'; }, 1500);
+            handleUserActivity();
         });
 
         // =====================================================
@@ -1035,9 +1075,11 @@
             deferredPrompt = e; });
         installBtn.addEventListener('click', () => { if (deferredPrompt) { deferredPrompt.prompt();
                 deferredPrompt = null;
-                installBanner.classList.remove('show'); } if (soundEnabled) playClickSound(); });
+                installBanner.classList.remove('show'); } if (soundEnabled) playClickSound();
+            handleUserActivity(); });
         headerInstall.addEventListener('click', () => { if (deferredPrompt) { deferredPrompt.prompt();
-                deferredPrompt = null; } else alert('Install from browser menu'); if (soundEnabled) playClickSound(); });
+                deferredPrompt = null; } else alert('Install from browser menu'); if (soundEnabled) playClickSound();
+            handleUserActivity(); });
         installClose.addEventListener('click', () => installBanner.classList.remove('show'));
         if (window.matchMedia('(display-mode: standalone)').matches) {
             installBanner.classList.remove('show');
@@ -1045,7 +1087,7 @@
         }
 
         // =====================================================
-        //  CROP ENGINE (FULL)
+        //  CROP ENGINE (COMPLETE)
         // =====================================================
         let cropper = null,
             croppedImageData = null,
@@ -1214,6 +1256,7 @@
             }
             if (croppedImageData && page2.classList.contains('active')) reapplyCropAndGenerate();
             if (soundEnabled) playClickSound();
+            handleUserActivity();
         });
 
         innerBorderSlider.addEventListener('input', function() {
@@ -1221,6 +1264,7 @@
             innerBorderValue.textContent = `${val} mm`;
             if (innerBorderToggle.checked) innerBorderInfoText.textContent = `${val} mm`;
             if (croppedImageData && page2.classList.contains('active')) reapplyCropAndGenerate();
+            handleUserActivity();
         });
 
         // =====================================================
@@ -1262,6 +1306,7 @@
         applyCropBtn.addEventListener('click', function() {
             if (!cropper) { alert('Upload image first!'); return; }
             if (soundEnabled) playClickSound();
+            handleUserActivity();
 
             const dpi = parseInt(dpiInput.value) || 300;
             const wVal = parseFloat(cropWidth.value) || 35;
@@ -1319,6 +1364,7 @@
         // =====================================================
         resetCropBtn.addEventListener('click', function() {
             if (soundEnabled) playClickSound();
+            handleUserActivity();
             if (cropper) cropper.destroy();
             cropper = null;
             croppedImageData = null;
@@ -1338,6 +1384,7 @@
 
         recropBtn.addEventListener('click', function() {
             if (soundEnabled) playClickSound();
+            handleUserActivity();
             page2.classList.remove('active');
             page1.classList.add('active');
             step1.className = 'step active';
@@ -1361,6 +1408,7 @@
         nextBtn.addEventListener('click', function() {
             if (!croppedImageData) return;
             if (soundEnabled) playClickSound();
+            handleUserActivity();
             page1.classList.remove('active');
             page2.classList.add('active');
             step1.className = 'step done';
@@ -1375,6 +1423,7 @@
 
         backToCrop.addEventListener('click', function() {
             if (soundEnabled) playClickSound();
+            handleUserActivity();
             page2.classList.remove('active');
             page1.classList.add('active');
             step1.className = 'step active';
@@ -1387,6 +1436,7 @@
         uploadBox.addEventListener('click', function() {
             fileInput.click();
             if (soundEnabled) playClickSound();
+            handleUserActivity();
         });
 
         fileInput.addEventListener('change', function(e) {
@@ -1412,13 +1462,13 @@
                     step1.className = 'step active';
                     step2.className = 'step';
                     if (soundEnabled) playSuccessSound();
+                    handleUserActivity();
                 };
                 img.src = ev.target.result;
             };
             reader.readAsDataURL(file);
         });
 
-        // Drag & Drop
         uploadBox.addEventListener('dragover', function(e) { e.preventDefault();
             uploadBox.style.borderColor = '#ffd54f'; });
         uploadBox.addEventListener('dragleave', function() { uploadBox.style.borderColor = 'rgba(144, 202, 249, 0.2)'; });
@@ -1427,7 +1477,8 @@
             uploadBox.style.borderColor = 'rgba(144, 202, 249, 0.2)';
             const file = e.dataTransfer.files[0];
             if (file) { fileInput.files = e.dataTransfer.files;
-                fileInput.dispatchEvent(new Event('change')); if (soundEnabled) playClickSound(); }
+                fileInput.dispatchEvent(new Event('change')); if (soundEnabled) playClickSound();
+                handleUserActivity(); }
         });
 
         // =====================================================
@@ -1619,17 +1670,21 @@
             updateRotateIndicators();
             if (croppedImageData && page2.classList.contains('active')) generateSheet();
             if (soundEnabled) playClickSound();
+            handleUserActivity();
         }
         rotateLeftBtn.addEventListener('click', () => rotateImage(-90));
         rotateRightBtn.addEventListener('click', () => rotateImage(90));
         flipHBtn.addEventListener('click', () => { currentFlipH = !currentFlipH;
-            updateRotateIndicators(); if (croppedImageData && page2.classList.contains('active')) generateSheet(); if (soundEnabled) playClickSound(); });
+            updateRotateIndicators(); if (croppedImageData && page2.classList.contains('active')) generateSheet(); if (soundEnabled) playClickSound();
+            handleUserActivity(); });
         flipVBtn.addEventListener('click', () => { currentFlipV = !currentFlipV;
-            updateRotateIndicators(); if (croppedImageData && page2.classList.contains('active')) generateSheet(); if (soundEnabled) playClickSound(); });
+            updateRotateIndicators(); if (croppedImageData && page2.classList.contains('active')) generateSheet(); if (soundEnabled) playClickSound();
+            handleUserActivity(); });
         resetRotateBtn.addEventListener('click', () => { currentAngle = 0;
             currentFlipH = false;
             currentFlipV = false;
-            updateRotateIndicators(); if (croppedImageData && page2.classList.contains('active')) generateSheet(); if (soundEnabled) playClickSound(); });
+            updateRotateIndicators(); if (croppedImageData && page2.classList.contains('active')) generateSheet(); if (soundEnabled) playClickSound();
+            handleUserActivity(); });
 
         // =====================================================
         //  COPY BUTTONS
@@ -1638,11 +1693,13 @@
             copiesInput.value = 6;
             if (croppedImageData && page2.classList.contains('active')) generateSheet();
             if (soundEnabled) playClickSound();
+            handleUserActivity();
         });
         document.getElementById('copy8Btn').addEventListener('click', function() {
             copiesInput.value = 8;
             if (croppedImageData && page2.classList.contains('active')) generateSheet();
             if (soundEnabled) playClickSound();
+            handleUserActivity();
         });
 
         // =====================================================
@@ -1651,6 +1708,7 @@
         printBtn.addEventListener('click', function() {
             if (!outputCanvas.width || !outputCanvas.height) { alert('Generate first!'); return; }
             if (soundEnabled) playClickSound();
+            handleUserActivity();
             const dataUrl = outputCanvas.toDataURL('image/jpeg', 0.98);
             printImage.src = dataUrl;
             const ps = document.querySelector('.print-sheet');
@@ -1662,16 +1720,25 @@
         });
 
         // =====================================================
-        //  SHARE
+        //  SHARE WITH RENAME
         // =====================================================
         shareBtn.addEventListener('click', function() {
-            if (!outputCanvas.width || !outputCanvas.height) { alert('Generate first!'); return; }
+            if (!outputCanvas.width || !outputCanvas.height) {
+                alert('Please generate the sheet first!');
+                return;
+            }
             if (soundEnabled) playClickSound();
+            handleUserActivity();
+
             const fileName = prompt("Enter file name:", "passport_sheet") || "passport_sheet";
+            if (!fileName) return;
+
             outputCanvas.toBlob(function(blob) {
                 if (navigator.share) {
-                    navigator.share({ title: fileName, files: [new File([blob], `${fileName}.png`, { type: 'image/png' })] })
-                        .catch(() => {});
+                    navigator.share({
+                        title: fileName,
+                        files: [new File([blob], `${fileName}.png`, { type: 'image/png' })]
+                    }).catch(() => {});
                 } else {
                     const link = document.createElement('a');
                     link.download = `${fileName}.png`;
@@ -1682,32 +1749,59 @@
         });
 
         // =====================================================
-        //  DOWNLOADS
+        //  DOWNLOAD PNG WITH RENAME
         // =====================================================
         downloadPngBtn.addEventListener('click', function() {
-            if (!outputCanvas.width || !outputCanvas.height) { alert('Generate first!'); return; }
+            if (!outputCanvas.width || !outputCanvas.height) {
+                alert('Please generate the sheet first!');
+                return;
+            }
             if (soundEnabled) playClickSound();
+            handleUserActivity();
+
+            const fileName = prompt("Enter file name:", "passport_sheet") || "passport_sheet";
+            if (!fileName) return;
+
             const link = document.createElement('a');
-            link.download = 'passport_sheet.png';
+            link.download = `${fileName}.png`;
             link.href = outputCanvas.toDataURL('image/png');
             link.click();
         });
 
+        // =====================================================
+        //  DOWNLOAD PDF WITH RENAME
+        // =====================================================
         downloadPdfBtn.addEventListener('click', function() {
-            if (!outputCanvas.width || !outputCanvas.height) { alert('Generate first!'); return; }
+            if (!outputCanvas.width || !outputCanvas.height) {
+                alert('Please generate the sheet first!');
+                return;
+            }
             if (soundEnabled) playClickSound();
+            handleUserActivity();
+
+            const fileName = prompt("Enter file name:", "passport_sheet") || "passport_sheet";
+            if (!fileName) return;
+
             const { jsPDF } = window.jspdf;
             const imgData = outputCanvas.toDataURL('image/jpeg', 0.95);
             const pdf = new jsPDF({ orientation: 'landscape', unit: 'in', format: [6, 4] });
             pdf.addImage(imgData, 'JPEG', 0, 0, 6, 4);
-            pdf.save('passport_sheet.pdf');
+            pdf.save(`${fileName}.pdf`);
         });
 
         // =====================================================
-        //  RESET ALL
+        //  NEW BUTTON WITH CONFIRMATION
         // =====================================================
         resetAllBtn.addEventListener('click', function() {
             if (soundEnabled) playClickSound();
+            handleUserActivity();
+
+            const confirmReset = confirm(
+                '⚠️ Are you sure you want to start over?\n\n' +
+                'All your current work will be lost!'
+            );
+            if (!confirmReset) return;
+
             if (cropper) cropper.destroy();
             cropper = null;
             croppedImageData = null;
@@ -1741,6 +1835,9 @@
             innerBorderInfoText.textContent = 'Off';
             document.querySelector('.print-sheet').style.display = 'none';
             copiesInput.value = 8;
+
+            alert('✅ Reset successful!\nUpload a new image to start.');
+            resetIdleTimer();
         });
 
         // =====================================================
@@ -1749,15 +1846,18 @@
         [showCutMarks, showStroke, strokeColor, strokeWidth, copiesInput, fillCheckbox].forEach(el => {
             el.addEventListener('change', function() {
                 if (croppedImageData && page2.classList.contains('active')) generateSheet();
+                handleUserActivity();
             });
             if (el.tagName === 'INPUT' && el.type === 'number') {
                 el.addEventListener('input', function() {
                     if (croppedImageData && page2.classList.contains('active')) generateSheet();
+                    handleUserActivity();
                 });
             }
             if (el.tagName === 'INPUT' && el.type === 'color') {
                 el.addEventListener('input', function() {
                     if (croppedImageData && page2.classList.contains('active')) generateSheet();
+                    handleUserActivity();
                 });
             }
         });
