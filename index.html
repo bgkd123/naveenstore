@@ -85,25 +85,21 @@
             z-index: 9996;
             pointer-events: none;
             opacity: 0;
-            transition: opacity 0.6s ease;
-            width: 200px;
+            transition: opacity 0.8s ease;
+            width: 220px;
             height: auto;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            background: rgba(0,0,0,0.3);
+            mix-blend-mode: screen;
         }
-        #idleVideoOverlay.show {
-            opacity: 1;
-        }
-        #idleVideoOverlay.hide {
-            opacity: 0;
-        }
+        #idleVideoOverlay.show { opacity: 1; }
+        #idleVideoOverlay.hide { opacity: 0; }
         #idleVideoOverlay video {
             width: 100%;
             height: auto;
             display: block;
             border-radius: 16px;
+            background: transparent;
         }
 
         /* ===== WELCOME SCREEN ===== */
@@ -555,7 +551,7 @@
             .ctrl-row select { max-width: 60px; }
             .page-nav { flex-direction: column; align-items: stretch; text-align: center; }
             .welcome-footer { bottom: 20px; font-size: 10px; }
-            #idleVideoOverlay { width: 150px; bottom: 40px; }
+            #idleVideoOverlay { width: 160px; bottom: 40px; }
         }
 
         .no-select { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
@@ -834,7 +830,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
         // =====================================================
-        //  IDLE VIDEO - 10 SECONDS INACTIVITY (FIXED)
+        //  IDLE VIDEO - 10 SECONDS INACTIVITY
         // =====================================================
         const idleVideoOverlay = document.getElementById('idleVideoOverlay');
         const idleVideo = document.getElementById('idleVideo');
@@ -846,16 +842,8 @@
                 idleVideoOverlay.classList.remove('hide');
                 idleVideoOverlay.classList.add('show');
                 isVideoVisible = true;
-                // ===== FIX: Reload and play video =====
                 idleVideo.load();
-                idleVideo.play().then(() => {
-                    console.log('Idle Video: Playing');
-                }).catch((error) => {
-                    console.log('Idle Video Error:', error);
-                    // Fallback: try muted
-                    idleVideo.muted = true;
-                    idleVideo.play().catch(() => {});
-                });
+                idleVideo.play().catch(() => {});
             }
         }
 
@@ -874,7 +862,6 @@
                 clearTimeout(idleTimer);
                 idleTimer = null;
             }
-            // Show video after 10 seconds of inactivity
             idleTimer = setTimeout(function() {
                 if (app.classList.contains('show')) {
                     showIdleVideo();
@@ -882,21 +869,23 @@
             }, 10000);
         }
 
-        // ===== DETECT USER ACTIVITY =====
         function handleUserActivity() {
-            hideIdleVideo();
+            if (isVideoVisible) {
+                hideIdleVideo();
+            } else {
+                resetIdleTimer();
+            }
         }
 
-        // Listen to all events
         document.addEventListener('click', handleUserActivity);
         document.addEventListener('touchstart', handleUserActivity);
         document.addEventListener('keydown', handleUserActivity);
         document.addEventListener('scroll', handleUserActivity);
         document.addEventListener('mousemove', handleUserActivity);
 
-        // Buttons and inputs
-        document.querySelectorAll('button, input, select, .upload, .btn, .chk input').forEach(el => {
+        document.querySelectorAll('button, input, select, .upload, .btn, .chk input, .sound-indicator, .btn-continue, .btn-install, .install-icon').forEach(el => {
             el.addEventListener('click', handleUserActivity);
+            el.addEventListener('touchstart', handleUserActivity);
             el.addEventListener('change', handleUserActivity);
             el.addEventListener('input', handleUserActivity);
         });
@@ -1042,7 +1031,6 @@
                 setTimeout(function() { 
                     if (deferredPrompt) installBanner.classList.add('show'); 
                 }, 1000);
-                // Start idle timer for video
                 resetIdleTimer();
             }, 500);
         }
@@ -1087,7 +1075,7 @@
         }
 
         // =====================================================
-        //  CROP ENGINE (COMPLETE)
+        //  CROP ENGINE
         // =====================================================
         let cropper = null,
             croppedImageData = null,
