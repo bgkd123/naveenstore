@@ -17,6 +17,164 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
+        /* ===== CREDIT VIDEO - SIMPLE & CLEAN ===== */
+        #creditVideoOverlay {
+            position: fixed;
+            bottom: 120px;
+            right: 20px;
+            z-index: 9995;
+            width: 220px;
+            max-width: 45vw;
+            border-radius: 16px;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        #creditVideoOverlay.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        #creditVideoOverlay video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 16px;
+            background: #000;
+            cursor: pointer;
+        }
+        #creditVideoOverlay .credit-label {
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 2;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            color: rgba(255,255,255,0.6);
+            text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+            pointer-events: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.3));
+            padding: 20px 8px 8px;
+        }
+        #creditVideoOverlay .credit-label strong {
+            color: #ffd54f;
+            font-weight: 600;
+        }
+        #creditVideoOverlay .close-credit {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            z-index: 3;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            color: rgba(255,255,255,0.5);
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+            backdrop-filter: blur(4px);
+            pointer-events: auto;
+            padding: 0;
+            line-height: 1;
+        }
+        #creditVideoOverlay .close-credit:hover {
+            background: rgba(255,0,0,0.3);
+            color: #fff;
+            transform: scale(1.1);
+        }
+        #creditVideoOverlay .play-credit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.2);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+            backdrop-filter: blur(8px);
+            pointer-events: auto;
+            padding: 0;
+        }
+        #creditVideoOverlay .play-credit:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        #creditVideoOverlay .play-credit.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0.8);
+        }
+
+        @media (max-width: 600px) {
+            #creditVideoOverlay {
+                bottom: 100px;
+                right: 10px;
+                width: 160px;
+                max-width: 40vw;
+            }
+            #creditVideoOverlay .play-credit {
+                width: 34px;
+                height: 34px;
+                font-size: 14px;
+            }
+            #creditVideoOverlay .credit-label {
+                font-size: 7px;
+                padding: 14px 6px 6px;
+            }
+            #creditVideoOverlay .close-credit {
+                width: 18px;
+                height: 18px;
+                font-size: 10px;
+                top: 4px;
+                right: 6px;
+            }
+        }
+
+        /* ===== PREVENT RIGHT-CLICK ON IMAGES ===== */
+        .img-wrap,
+        .img-wrap img,
+        #cropImage,
+        #previewImg,
+        .upload img,
+        .sheet-preview canvas,
+        .sheet-preview img,
+        canvas {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
+            pointer-events: auto;
+        }
+        
+        img, canvas, .img-wrap, .sheet-preview {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -25,7 +183,6 @@
             color: #fff;
             overflow-x: hidden;
         }
-
         .bg-animation {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -39,7 +196,6 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-
         .particles {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -61,7 +217,6 @@
             90% { opacity: 1; }
             100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
         }
-
         .sound-indicator {
             position: fixed; bottom: 80px; right: 20px;
             background: rgba(0,0,0,0.5); padding: 8px 14px;
@@ -76,7 +231,6 @@
         .sound-indicator:hover { color: #fff; border-color: rgba(255,213,79,0.3); }
         .sound-indicator.show { display: block; }
 
-        /* ===== IDLE VIDEO OVERLAY ===== */
         #idleVideoOverlay {
             position: fixed;
             top: 50%;
@@ -105,7 +259,6 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
 
-        /* ===== WELCOME SCREEN ===== */
         #welcomeScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #0d47a1, #1a237e, #0d47a1);
@@ -171,7 +324,6 @@
             transform: scale(1.05);
             box-shadow: 0 0 50px rgba(255, 213, 79, 0.5);
         }
-
         .welcome-footer {
             position: absolute;
             bottom: 30px;
@@ -185,7 +337,6 @@
         }
         .welcome-footer strong { color: rgba(255,255,255,0.3); font-weight: 400; }
 
-        /* ===== SPLASH - VIDEO ONLY ===== */
         #splashScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0d0d0d;
@@ -206,7 +357,6 @@
             z-index: 1;
         }
 
-        /* ===== INSTALL BANNER ===== */
         #install {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             background: linear-gradient(135deg, #1a237e, #0d47a1);
@@ -231,7 +381,6 @@
         #install .btn-install:hover { transform: scale(1.05); }
         #install .close { background: none; color: rgba(255,255,255,0.4); border: none; font-size: 18px; cursor: pointer; }
 
-        /* ===== APP ===== */
         .app {
             max-width: 950px;
             margin: 0 auto;
@@ -241,7 +390,6 @@
         }
         .app.show { display: block; animation: fadeInUp 0.6s ease; }
 
-        /* ===== HEADER ===== */
         .header {
             background: linear-gradient(135deg, #1a237e, #0d47a1);
             border-radius: 14px; padding: 14px 20px;
@@ -277,7 +425,6 @@
         .header .badge .install-icon { cursor: pointer; font-size: 14px; transition: 0.3s; }
         .header .badge .install-icon:hover { transform: scale(1.2); }
 
-        /* ===== STEPS ===== */
         .steps {
             display: flex; justify-content: center; gap: 30px; margin: 18px 0;
             flex-wrap: wrap;
@@ -304,11 +451,9 @@
         .steps .step.done .num { background: #2e7d32; color: #fff; }
         .steps .step .line { width: 25px; height: 2px; background: rgba(255,255,255,0.1); }
 
-        /* ===== PAGES ===== */
         .page { display: none; }
         .page.active { display: block; }
 
-        /* ===== CARD ===== */
         .card {
             background: rgba(255,255,255,0.03);
             border-radius: 14px; padding: 20px;
@@ -317,7 +462,6 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
 
-        /* ===== UPLOAD ===== */
         .upload {
             border: 2px dashed rgba(144, 202, 249, 0.2);
             border-radius: 12px; padding: 36px 20px;
@@ -336,11 +480,9 @@
         .upload img { max-width: 100%; max-height: 200px; display: none; margin: 10px auto; border-radius: 8px; }
         #fileInput { display: none; }
 
-        /* ===== ROW ===== */
         .row { display: flex; gap: 20px; flex-wrap: wrap; }
         .col { flex: 1; min-width: 250px; }
 
-        /* ===== PANEL ===== */
         .panel {
             background: rgba(255,255,255,0.03);
             border-radius: 10px; padding: 14px 16px;
@@ -348,7 +490,6 @@
         }
         .panel .label { font-size: 12px; font-weight: 600; color: #90caf9; margin-bottom: 8px; }
 
-        /* ===== CONTROLS ===== */
         .ctrl-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
         .ctrl-row label { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 500; min-width: 30px; }
         .ctrl-row input, .ctrl-row select {
@@ -369,53 +510,108 @@
         .chk input[type="checkbox"] { width: 16px; height: 16px; accent-color: #ffd54f; cursor: pointer; }
         .chk label { font-size: 13px; color: rgba(255,255,255,0.7); cursor: pointer; }
 
-        /* ===== SLIDER ===== */
-        .slider-wrap {
-            background: rgba(255,255,255,0.03);
-            border-radius: 8px; padding: 10px 12px;
-            border: 1px solid rgba(255,255,255,0.05);
-            margin: 4px 0;
+        .bg-btn {
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 12px;
+            font-weight: 500;
         }
-        .slider-wrap .head {
-            display: flex; justify-content: space-between; font-size: 13px;
-            color: rgba(255,255,255,0.7); font-weight: 500;
-        }
-        .slider-wrap .head .val {
-            background: rgba(255,255,255,0.05); padding: 0 12px;
-            border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);
-            font-size: 13px; color: #ffd54f;
-        }
-        .slider-wrap input[type="range"] {
-            width: 100%; margin: 4px 0;
-            -webkit-appearance: none; appearance: none; height: 4px;
-            background: linear-gradient(90deg, #1a237e, #ffd54f);
-            border-radius: 2px; outline: none;
-        }
-        .slider-wrap input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; appearance: none; width: 18px; height: 18px;
-            border-radius: 50%; background: #ffd54f; cursor: pointer;
-            border: 2px solid #fff; box-shadow: 0 0 20px rgba(255, 213, 79, 0.3);
-        }
-        .slider-wrap input[type="range"]::-moz-range-thumb {
-            width: 18px; height: 18px; border-radius: 50%;
-            background: #ffd54f; cursor: pointer;
-            border: 2px solid #fff; box-shadow: 0 0 20px rgba(255, 213, 79, 0.3);
-        }
-        .slider-wrap .labels { display: flex; justify-content: space-between; font-size: 10px; color: rgba(255,255,255,0.2); }
+        .bg-btn:hover { transform: scale(1.05); }
+        .bg-btn.active { border-color: #ffd54f; box-shadow: 0 0 20px rgba(255,213,79,0.2); }
 
-        /* ===== BUTTONS ===== */
+        .option-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 8px 0;
+        }
+        .option-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.02);
+            color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            min-width: 120px;
+        }
+        .option-btn:hover {
+            border-color: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+        }
+        .option-btn.active {
+            border-color: #ffd54f;
+            background: rgba(255,213,79,0.05);
+            color: #fff;
+        }
+        .option-btn .icon { font-size: 20px; display: block; margin-bottom: 4px; }
+        .option-btn .sub { font-size: 10px; color: rgba(255,255,255,0.2); display: block; margin-top: 2px; }
+
+        .size-btn {
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+            color: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 11px;
+            font-weight: 500;
+            text-align: center;
+            min-width: 50px;
+        }
+        .size-btn:hover {
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.04);
+            color: #fff;
+        }
+        .size-btn.active {
+            border-color: #ffd54f;
+            background: rgba(255,213,79,0.05);
+            color: #ffd54f;
+        }
+
+        .border-buttons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .border-btn {
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+            color: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 12px;
+            font-weight: 500;
+            min-width: 32px;
+            text-align: center;
+        }
+        .border-btn:hover {
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.04);
+            color: #fff;
+        }
+        .border-btn.active {
+            border-color: #ffd54f;
+            background: rgba(255,213,79,0.05);
+            color: #ffd54f;
+        }
+
         .btn {
             padding: 8px 18px; border: none; border-radius: 8px; font-weight: 600;
             cursor: pointer; transition: 0.3s; font-size: 13px; display: inline-flex;
             align-items: center; gap: 6px; justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn::after {
-            content: '';
-            position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-            animation: shimmer 3s ease-in-out infinite;
         }
         .btn-primary {
             background: linear-gradient(135deg, #1a237e, #0d47a1);
@@ -449,23 +645,19 @@
         .btn-info:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(2, 136, 209, 0.5); }
         .btn-sm { padding: 5px 12px; font-size: 12px; }
         .btn-block { width: 100%; justify-content: center; }
-        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
 
         .action-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
         .action-row .btn { flex: 1; min-width: 80px; }
 
-        .copy-buttons { display: flex; gap: 8px; margin-top: 8px; }
-        .copy-buttons .btn { flex: 1; }
-
         .rotate-group { display: flex; gap: 4px; flex-wrap: wrap; }
         .rotate-group .btn { flex: 1; min-width: 40px; padding: 5px 8px; font-size: 12px; }
 
-        /* ===== PREVIEW ===== */
         .img-wrap {
             background: rgba(0,0,0,0.3);
             border-radius: 10px; overflow: hidden; min-height: 240px;
             border: 2px solid rgba(255,255,255,0.05);
             display: flex; align-items: center; justify-content: center;
+            position: relative;
         }
         .img-wrap.crop-active { border-color: #1a237e; }
         .img-wrap.crop-locked { border-color: #2e7d32; border-width: 3px; }
@@ -515,26 +707,20 @@
         }
         .app-footer strong { color: rgba(255,255,255,0.3); font-weight: 400; }
 
-        /* ===== STUDIO SCRIPT ===== */
+        .copy-buttons { display: flex; gap: 8px; margin-top: 8px; }
+        .copy-buttons .btn { flex: 1; }
+
         .studio-script {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            z-index: 9995;
+            z-index: 9994;
             background: linear-gradient(180deg, transparent, rgba(10, 10, 26, 0.92));
             padding: 10px 20px 8px;
             text-align: center;
             pointer-events: none;
             animation: fadeSlideUp 0.8s ease;
-        }
-        .studio-script .branding {
-            margin-bottom: 2px;
-        }
-        .studio-script .branding .logo {
-            font-size: 14px;
-            display: inline-block;
-            margin-right: 4px;
         }
         .studio-script .branding .name {
             font-size: 13px;
@@ -542,36 +728,15 @@
             color: rgba(255,255,255,0.4);
             letter-spacing: 1px;
         }
-        .studio-script .branding .name span {
-            color: rgba(144, 202, 249, 0.3);
-            font-weight: 300;
-        }
-        .studio-script .branding .tagline {
-            font-size: 8px;
-            color: rgba(255, 255, 255, 0.08);
-            letter-spacing: 2px;
-            display: block;
-            margin-top: 0px;
-        }
+        .studio-script .branding .name span { color: rgba(144, 202, 249, 0.3); font-weight: 300; }
         .studio-script .credit {
             font-size: 10px;
-            color: rgba(255, 255, 255, 0.2);
+            color: rgba(255,255,255,0.2);
             letter-spacing: 0.3px;
             font-weight: 300;
             margin: 1px 0;
         }
-        .studio-script .credit .icon {
-            color: #ffd54f;
-            font-size: 11px;
-            margin-right: 3px;
-        }
-        .studio-script .credit strong {
-            color: rgba(255, 255, 255, 0.3);
-            font-weight: 400;
-        }
-        .studio-script .credit strong:last-child {
-            color: rgba(144, 202, 249, 0.2);
-        }
+        .studio-script .credit strong { color: rgba(255,255,255,0.3); font-weight: 400; }
         .studio-script .services {
             display: flex;
             justify-content: center;
@@ -579,27 +744,19 @@
             gap: 5px;
             flex-wrap: wrap;
             font-size: 8px;
-            color: rgba(255, 255, 255, 0.08);
+            color: rgba(255,255,255,0.08);
             letter-spacing: 0.3px;
             margin: 1px 0;
             padding: 2px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.015);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.015);
+            border-top: 1px solid rgba(255,255,255,0.015);
+            border-bottom: 1px solid rgba(255,255,255,0.015);
         }
-        .studio-script .services .divider {
-            color: rgba(255, 255, 255, 0.02);
-        }
+        .studio-script .services .divider { color: rgba(255,255,255,0.02); }
         .studio-script .motto {
             font-size: 8px;
-            color: rgba(255, 255, 255, 0.04);
+            color: rgba(255,255,255,0.04);
             letter-spacing: 3px;
             margin: 1px 0;
-        }
-        .studio-script .disclaimer {
-            font-size: 7px;
-            color: rgba(255, 255, 255, 0.02);
-            letter-spacing: 0.5px;
-            margin-top: 1px;
         }
 
         @keyframes fadeSlideUp {
@@ -607,14 +764,16 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ============================================
-           PRINT STYLES - ONLY 6x4 SHEET
-           ============================================ */
+        .print-sheet {
+            display: none;
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            width: 6in;
+            height: 4in;
+        }
         @media print {
-            /* Hide everything */
             body * { display: none !important; }
-            
-            /* Show only print sheet */
             .print-sheet, .print-sheet * { 
                 display: block !important; 
                 visibility: visible !important;
@@ -625,24 +784,45 @@
                 left: 0 !important;
                 margin: 0 !important;
                 padding: 0 !important;
-                width: 6in !important;
-                height: 4in !important;
                 background: white !important;
                 box-shadow: none !important;
                 border: none !important;
                 z-index: 99999 !important;
             }
             .print-sheet img {
-                width: 6in !important;
-                height: 4in !important;
+                width: 100% !important;
+                height: 100% !important;
                 object-fit: contain !important;
             }
             @page {
-                size: 6in 4in !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 border: none !important;
             }
+        }
+
+        .page-size-btn {
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+            color: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 10px;
+            font-weight: 500;
+            text-align: center;
+            min-width: 50px;
+        }
+        .page-size-btn:hover {
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.04);
+            color: #fff;
+        }
+        .page-size-btn.active {
+            border-color: #ffd54f;
+            background: rgba(255,213,79,0.05);
+            color: #ffd54f;
         }
 
         @media (max-width: 600px) {
@@ -654,48 +834,45 @@
             .card { padding: 14px; }
             .row { flex-direction: column; }
             .col { min-width: auto; }
-            .ctrl-row input[type="number"] { max-width: 60px; }
-            .upload { padding: 24px 16px; }
-            .upload .icon { font-size: 36px; }
-            .upload h3 { font-size: 15px; }
-            .action-grid .btn { min-width: 60px; font-size: 12px; padding: 6px 12px; }
-            .copy-buttons .btn { font-size: 12px; padding: 6px 10px; }
             .welcome-box h1 { font-size: 28px; }
             .welcome-box .logo { font-size: 56px; }
-            .ctrl-row select { max-width: 60px; }
-            .page-nav { flex-direction: column; align-items: stretch; text-align: center; }
-            .welcome-footer { bottom: 20px; font-size: 10px; }
-            #idleVideoOverlay { width: 280px; max-width: 85vw; }
             .studio-script { padding: 6px 12px 4px; }
             .studio-script .branding .name { font-size: 11px; }
             .studio-script .credit { font-size: 8px; }
-            .studio-script .services { font-size: 7px; gap: 3px; }
-            .studio-script .motto { font-size: 7px; }
-            .studio-script .branding .logo { font-size: 12px; }
         }
 
-        .no-select { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        .no-select { 
+            -webkit-user-select: none !important; 
+            -moz-user-select: none !important; 
+            -ms-user-select: none !important; 
+            user-select: none !important;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ===== BACKGROUND ===== -->
     <div class="bg-animation"></div>
     <div class="particles" id="particles"></div>
 
-    <!-- ===== SOUND INDICATOR ===== -->
     <div class="sound-indicator" id="soundIndicator">🔊 Sound ON</div>
 
-    <!-- ===== IDLE VIDEO OVERLAY ===== -->
+    <!-- ===== CREDIT VIDEO - SIMPLE & CLEAN ===== -->
+    <div id="creditVideoOverlay">
+        <video id="creditVideo" muted loop playsinline preload="auto">
+            <source src="createdby.webm" type="video/webm">
+        </video>
+        <div class="credit-label">⚡ <strong>NAVEEN STORE</strong> · Created by Sanil</div>
+        <button class="close-credit" id="creditCloseBtn">✕</button>
+        <button class="play-credit" id="creditPlayBtn">▶</button>
+    </div>
+
     <div id="idleVideoOverlay" class="hide">
         <video id="idleVideo" muted loop playsinline preload="auto">
             <source src="createdby.webm" type="video/webm">
         </video>
     </div>
 
-    <!-- ============================================ -->
-    <!-- WELCOME SCREEN                               -->
-    <!-- ============================================ -->
+    <!-- WELCOME -->
     <div id="welcomeScreen">
         <div class="welcome-box">
             <div class="logo">📸</div>
@@ -712,18 +889,14 @@
         <div class="welcome-footer">Created by <strong>Sanil</strong></div>
     </div>
 
-    <!-- ============================================ -->
-    <!-- SPLASH - VIDEO ONLY                         -->
-    <!-- ============================================ -->
+    <!-- SPLASH -->
     <div id="splashScreen">
         <video id="splashVideo" autoplay playsinline>
             <source src="pasplash.webm" type="video/webm">
         </video>
     </div>
 
-    <!-- ============================================ -->
-    <!-- INSTALL BANNER                               -->
-    <!-- ============================================ -->
+    <!-- INSTALL -->
     <div id="install">
         <span>📸</span>
         <span style="font-size:13px;">Install <strong>NAVEEN STORE</strong></span>
@@ -731,12 +904,9 @@
         <button class="close" id="installClose">✕</button>
     </div>
 
-    <!-- ============================================ -->
-    <!-- APP                                          -->
-    <!-- ============================================ -->
+    <!-- APP -->
     <div class="app" id="app">
 
-        <!-- HEADER -->
         <div class="header">
             <div class="brand">
                 <span class="icon">📸</span>
@@ -751,19 +921,14 @@
             </div>
         </div>
 
-        <!-- STEPS -->
         <div class="steps">
             <div class="step active" id="step1"><span class="num">1</span> Crop <span class="line"></span></div>
             <div class="step" id="step2"><span class="num">2</span> Export</div>
         </div>
 
-        <!-- ================================ -->
-        <!-- PAGE 1: CROP                    -->
-        <!-- ================================ -->
+        <!-- PAGE 1: CROP -->
         <div class="page active" id="page1">
             <div class="card">
-
-                <!-- UPLOAD -->
                 <div class="upload" id="uploadBox">
                     <div class="icon">🖼️</div>
                     <h3>Upload Photo</h3>
@@ -793,21 +958,74 @@
                                 </div>
                             </div>
 
-                            <!-- ===== SIZE SELECTOR ===== -->
                             <div class="panel">
                                 <div class="label">📋 Quick Select</div>
                                 <div class="ctrl-row" style="flex-wrap: wrap; gap: 6px;">
-                                    <button class="btn btn-outline btn-sm size-btn" data-w="35" data-h="45" data-unit="mm" style="flex:1; min-width:60px;">Passport</button>
-                                    <button class="btn btn-outline btn-sm size-btn" data-w="2" data-h="2" data-unit="inch" style="flex:1; min-width:60px;">US Visa</button>
-                                    <button class="btn btn-outline btn-sm size-btn" data-w="50" data-h="50" data-unit="mm" style="flex:1; min-width:60px;">Canada</button>
-                                    <button class="btn btn-outline btn-sm size-btn" data-w="30" data-h="40" data-unit="mm" style="flex:1; min-width:60px;">Japan</button>
-                                    <button class="btn btn-outline btn-sm size-btn" data-w="25" data-h="35" data-unit="mm" style="flex:1; min-width:60px;">Aadhaar</button>
-                                    <button class="btn btn-outline btn-sm size-btn" data-w="30" data-h="40" data-unit="mm" style="flex:1; min-width:60px;">PAN</button>
-                                    <button class="btn btn-outline btn-sm size-btn" data-w="1" data-h="1" data-unit="inch" style="flex:1; min-width:60px;">1×1in</button>
-                                    <button class="btn btn-outline btn-sm size-btn" data-w="1.5" data-h="1.5" data-unit="inch" style="flex:1; min-width:60px;">1.5×1.5in</button>
-                                    <button class="btn btn-outline btn-sm size-btn" data-w="2" data-h="2" data-unit="inch" style="flex:1; min-width:60px;">2×2in</button>
-                                    <button class="btn btn-outline btn-sm size-btn" data-w="25" data-h="30" data-unit="mm" style="flex:1; min-width:60px;">25×30</button>
-                                    <button class="btn btn-outline btn-sm size-btn" data-w="50" data-h="70" data-unit="mm" style="flex:1; min-width:60px;">50×70</button>
+                                    <button class="size-btn" data-w="35" data-h="45" data-unit="mm">Passport</button>
+                                    <button class="size-btn" data-w="2" data-h="2" data-unit="inch">US Visa</button>
+                                    <button class="size-btn" data-w="50" data-h="50" data-unit="mm">Canada</button>
+                                    <button class="size-btn" data-w="30" data-h="40" data-unit="mm">Japan</button>
+                                    <button class="size-btn" data-w="25" data-h="35" data-unit="mm">Aadhaar</button>
+                                    <button class="size-btn" data-w="30" data-h="40" data-unit="mm">PAN</button>
+                                    <button class="size-btn" data-w="1" data-h="1" data-unit="inch">1×1in</button>
+                                    <button class="size-btn" data-w="1.5" data-h="1.5" data-unit="inch">1.5×1.5in</button>
+                                    <button class="size-btn" data-w="2" data-h="2" data-unit="inch">2×2in</button>
+                                    <button class="size-btn" data-w="25" data-h="30" data-unit="mm">25×30</button>
+                                    <button class="size-btn" data-w="50" data-h="70" data-unit="mm">50×70</button>
+                                </div>
+                            </div>
+
+                            <div class="panel" style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.05);">
+                                <div class="label">🎯 Choose Your Option</div>
+                                <div class="option-group">
+                                    <button class="option-btn active" data-option="asis" id="useAsIsBtn">
+                                        <span class="icon">📸</span>
+                                        Use as is
+                                        <span class="sub">Already perfect photo</span>
+                                    </button>
+                                    <button class="option-btn" data-option="removebg" id="removeBgOptionBtn">
+                                        <span class="icon">✨</span>
+                                        Remove Background
+                                        <span class="sub">Add White/Blue BG</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="panel" id="bgColorPanel" style="display:none; border-color: rgba(2,136,209,0.2);">
+                                <div class="label">🎨 Choose Background Color <span style="font-size:10px; color:rgba(255,255,255,0.2);">(Auto Update)</span></div>
+                                <div class="ctrl-row" style="flex-wrap: wrap; gap: 8px;">
+                                    <button class="bg-btn active" data-bg="#FFFFFF" style="background:#fff; color:#333; border-color:#ffd54f;">⬜ White</button>
+                                    <button class="bg-btn" data-bg="#1a73e8" style="background:#1a73e8; color:#fff;">🔵 Blue</button>
+                                    <button class="bg-btn" data-bg="none" style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.5);">❌ None</button>
+                                </div>
+                                <div style="font-size:10px; color:rgba(255,255,255,0.15); margin-top:4px; text-align:center;">
+                                    💡 Color select ചെയ്താൽ preview auto-update ആകും
+                                </div>
+                            </div>
+
+                            <div class="panel" id="removeBgPanel" style="display:none; background: rgba(2,136,209,0.05); border-color: rgba(2,136,209,0.15);">
+                                <div class="label">✨ Remove Background</div>
+                                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                    <button class="btn btn-info" id="downloadCropBtn" style="flex:1; min-width:100px;">
+                                        ⬇️ Download Cropped
+                                    </button>
+                                    <button class="btn btn-primary" id="openRemoveBgBtn" style="flex:1; min-width:100px;">
+                                        🌐 Open Remove.bg
+                                    </button>
+                                </div>
+                                <div style="font-size:10px; color:rgba(255,255,255,0.15); margin-top:6px; text-align:center;">
+                                    1. Download cropped image<br>
+                                    2. Open Remove.bg & upload<br>
+                                    3. Download & upload back
+                                </div>
+                            </div>
+
+                            <div class="panel" id="uploadBgRemovedPanel" style="display:none; background: rgba(46,125,50,0.05); border-color: rgba(46,125,50,0.15);">
+                                <div class="label">📤 Upload Background Removed Image</div>
+                                <div class="upload" id="uploadBgRemovedBox" style="padding:16px; margin-bottom:0;">
+                                    <div class="icon" style="font-size:28px;">🖼️</div>
+                                    <p style="font-size:12px; color:rgba(255,255,255,0.3);">Tap to upload BG removed image</p>
+                                    <input type="file" id="bgRemovedInput" accept="image/*">
                                 </div>
                             </div>
 
@@ -836,7 +1054,7 @@
                                 <span id="statusBadge" class="tag idle">⏳ Idle</span>
                             </div>
                             <div class="img-wrap no-select" id="imgWrapper">
-                                <img id="cropImage" src="" alt="Crop">
+                                <img id="cropImage" src="" alt="Crop" draggable="false">
                             </div>
                             <div class="status">
                                 <span id="previewHint">👆 Upload image</span>
@@ -850,9 +1068,7 @@
             </div>
         </div>
 
-        <!-- ================================ -->
-        <!-- PAGE 2: EXPORT                  -->
-        <!-- ================================ -->
+        <!-- PAGE 2: EXPORT -->
         <div class="page" id="page2">
             <div class="card">
 
@@ -881,6 +1097,30 @@
                             </div>
                         </div>
 
+                        <!-- ===== PAGE SIZE SELECTOR ===== -->
+                        <div class="panel" style="border-color: rgba(255,213,79,0.15);">
+                            <div class="label">📄 Page Size <span style="font-size:10px; color:rgba(255,213,79,0.3);">(Auto Update)</span></div>
+                            <div class="ctrl-row" style="flex-wrap: wrap; gap: 6px;">
+                                <button class="page-size-btn active" data-w="6" data-h="4">6×4</button>
+                                <button class="page-size-btn" data-w="5" data-h="7">5×7</button>
+                                <button class="page-size-btn" data-w="8" data-h="6">8×6</button>
+                                <button class="page-size-btn" data-w="12" data-h="8">12×8</button>
+                                <button class="page-size-btn" data-w="8.27" data-h="11.69">A4</button>
+                                <button class="page-size-btn" data-w="custom" data-h="custom">Custom</button>
+                            </div>
+                            <div class="ctrl-row" style="margin-top:6px;">
+                                <label>W</label>
+                                <input type="number" id="pageWidth" value="6" step="0.1" min="2" max="20" style="max-width:60px;">
+                                <label>H</label>
+                                <input type="number" id="pageHeight" value="4" step="0.1" min="2" max="20" style="max-width:60px;">
+                                <label>in</label>
+                                <span style="font-size:11px;color:rgba(255,255,255,0.3);">(inches)</span>
+                            </div>
+                            <div style="font-size:10px; color:rgba(255,255,255,0.15); margin-top:4px; text-align:center;">
+                                💡 Page size change ചെയ്താൽ sheet auto-update ആകും
+                            </div>
+                        </div>
+
                         <div class="panel">
                             <div class="label">✂️ Marks</div>
                             <div class="chk"><input type="checkbox" id="showCutMarks"><label for="showCutMarks">Cutting marks</label></div>
@@ -893,16 +1133,27 @@
                             </div>
                         </div>
 
-                        <div class="panel">
-                            <div class="label">⬜ Inner Border</div>
-                            <div class="chk"><input type="checkbox" id="innerBorderToggle"><label for="innerBorderToggle">Enable</label></div>
-                            <div class="slider-wrap" id="innerBorderSliderGroup" style="opacity:0.4;pointer-events:none;">
-                                <div class="head">
-                                    <span>Padding</span>
-                                    <span class="val" id="innerBorderValue">2.0 mm</span>
-                                </div>
-                                <input type="range" id="innerBorderSlider" min="0" max="5" step="0.1" value="2">
-                                <div class="labels"><span>0</span><span>5 mm</span></div>
+                        <!-- ===== INNER BORDER ===== -->
+                        <div class="panel" style="border-color: rgba(255,213,79,0.15);">
+                            <div class="label">⬜ Inner White Border <span style="font-size:10px; color:rgba(255,213,79,0.3);">(Outside Border - Auto Update)</span></div>
+                            <div class="chk">
+                                <input type="checkbox" id="innerBorderToggle">
+                                <label for="innerBorderToggle">Enable White Border</label>
+                            </div>
+                            <div class="border-buttons" id="innerBorderButtons" style="opacity:0.4;pointer-events:none;">
+                                <button class="border-btn active" data-value="0">0</button>
+                                <button class="border-btn" data-value="0.5">0.5</button>
+                                <button class="border-btn" data-value="1">1</button>
+                                <button class="border-btn" data-value="1.5">1.5</button>
+                                <button class="border-btn" data-value="2">2</button>
+                                <button class="border-btn" data-value="2.5">2.5</button>
+                                <button class="border-btn" data-value="3">3</button>
+                                <button class="border-btn" data-value="4">4</button>
+                                <button class="border-btn" data-value="5">5</button>
+                                <span style="font-size:10px; color:rgba(255,255,255,0.2); margin-left:4px;">mm</span>
+                            </div>
+                            <div style="font-size:11px; color:rgba(255,255,255,0.15); margin-top:4px; text-align:center;">
+                                💡 Photo size മാറില്ല. Border photo-യുടെ പുറത്ത് വരും
                             </div>
                         </div>
 
@@ -934,7 +1185,8 @@
                         <div class="info-box">
                             <span>📐 <strong id="arrangePhotoSize">35×45 mm</strong></span>
                             <span>📋 <strong id="arrangeCount">0</strong>/sheet</span>
-                            <span style="display:block;font-size:12px;color:rgba(255,255,255,0.3);" id="innerBorderInfo">⬜ Inner: <span id="innerBorderInfoText">2.0 mm</span></span>
+                            <span style="display:block;font-size:12px;color:rgba(255,255,255,0.3);" id="innerBorderInfo">⬜ Border: <span id="innerBorderInfoText">Off</span></span>
+                            <span style="display:block;font-size:12px;color:rgba(255,255,255,0.3);" id="pageSizeInfo">📄 Page: <span id="pageSizeInfoText">6×4 in</span></span>
                         </div>
 
                         <div class="action-grid">
@@ -954,66 +1206,142 @@
 
     </div>
 
-    <!-- ============================================ -->
-    <!-- STUDIO SCRIPT                               -->
-    <!-- ============================================ -->
+    <!-- STUDIO SCRIPT -->
     <div class="studio-script">
         <div class="branding">
-            <span class="logo">📸</span>
             <span class="name">NAVEEN <span>STORE</span></span>
-            <span class="tagline">✦ Professional Photo Studio ✦</span>
         </div>
         <div class="motto">✦ Quality · Precision · Trust ✦</div>
         <div class="services">
-            <span>Passport</span>
-            <span class="divider">·</span>
-            <span>Visa</span>
-            <span class="divider">·</span>
-            <span>ID</span>
-            <span class="divider">·</span>
-            <span>DL</span>
-            <span class="divider">·</span>
-            <span>PAN/Aadhaar</span>
-            <span class="divider">·</span>
+            <span>Passport</span><span class="divider">·</span>
+            <span>Visa</span><span class="divider">·</span>
+            <span>ID</span><span class="divider">·</span>
+            <span>DL</span><span class="divider">·</span>
+            <span>PAN/Aadhaar</span><span class="divider">·</span>
             <span>Custom</span>
         </div>
         <div class="credit">
-            <span class="icon">⚡</span>
-            <span>Developed by <strong>Sanil</strong> · For <strong>NAVEEN STORE</strong></span>
+            ⚡ Developed by <strong>Sanil</strong> · For <strong>NAVEEN STORE</strong>
         </div>
-        <div class="disclaimer">© 2024 NAVEEN STORE</div>
     </div>
 
-    <!-- ===== PRINT SHEET ===== -->
-    <div class="print-sheet" style="display:none;position:fixed;top:-9999px;left:-9999px;width:6in;height:4in;">
+    <div class="print-sheet">
         <img id="printImage" src="" alt="Print">
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
         // =====================================================
-        //  SIZE QUICK SELECT
+        //  CREDIT VIDEO - SIMPLE & CLEAN
         // =====================================================
-        document.querySelectorAll('.size-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const w = this.dataset.w;
-                const h = this.dataset.h;
-                const unit = this.dataset.unit;
+        const creditOverlay = document.getElementById('creditVideoOverlay');
+        const creditVideo = document.getElementById('creditVideo');
+        const creditPlayBtn = document.getElementById('creditPlayBtn');
+        const creditCloseBtn = document.getElementById('creditCloseBtn');
+        let creditVideoVisible = false;
+        let creditVideoPlaying = false;
 
-                document.getElementById('cropWidth').value = w;
-                document.getElementById('cropHeight').value = h;
-                document.getElementById('unitSelect').value = unit;
+        // Show credit video after 3 seconds
+        setTimeout(() => {
+            creditOverlay.classList.add('show');
+            creditVideoVisible = true;
+            creditVideo.load();
+            // Auto play after user interaction
+            const autoPlay = () => {
+                if (creditVideoVisible && !creditVideoPlaying) {
+                    creditVideo.play().catch(() => {});
+                    creditVideoPlaying = true;
+                    creditPlayBtn.classList.add('hidden');
+                }
+                document.removeEventListener('click', autoPlay);
+                document.removeEventListener('touchstart', autoPlay);
+            };
+            document.addEventListener('click', autoPlay);
+            document.addEventListener('touchstart', autoPlay);
+        }, 3000);
 
-                document.getElementById('cropWidth').dispatchEvent(new Event('change'));
-                document.getElementById('cropHeight').dispatchEvent(new Event('change'));
-                document.getElementById('unitSelect').dispatchEvent(new Event('change'));
+        // Play button
+        creditPlayBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (creditVideo.paused) {
+                creditVideo.play().catch(() => {});
+                creditVideoPlaying = true;
+                this.classList.add('hidden');
+            } else {
+                creditVideo.pause();
+                creditVideoPlaying = false;
+                this.classList.remove('hidden');
+                this.textContent = '▶';
+            }
+        });
 
-                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
+        // Close button
+        creditCloseBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            creditOverlay.classList.remove('show');
+            creditVideoVisible = false;
+            creditVideo.pause();
+            creditVideoPlaying = false;
+        });
 
-                if (soundEnabled) playClickSound();
-                handleUserActivity();
-            });
+        // Video click toggle
+        creditVideo.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (this.paused) {
+                this.play().catch(() => {});
+                creditVideoPlaying = true;
+                creditPlayBtn.classList.add('hidden');
+            } else {
+                this.pause();
+                creditVideoPlaying = false;
+                creditPlayBtn.classList.remove('hidden');
+                creditPlayBtn.textContent = '▶';
+            }
+        });
+
+        // Video ended - replay
+        creditVideo.addEventListener('ended', function() {
+            creditVideoPlaying = false;
+            creditPlayBtn.classList.remove('hidden');
+            creditPlayBtn.textContent = '🔄';
+            setTimeout(() => {
+                this.currentTime = 0;
+                this.play().catch(() => {});
+                creditVideoPlaying = true;
+                creditPlayBtn.classList.add('hidden');
+            }, 2000);
+        });
+
+        creditVideo.addEventListener('play', function() {
+            creditPlayBtn.classList.add('hidden');
+            creditVideoPlaying = true;
+        });
+
+        creditVideo.addEventListener('pause', function() {
+            if (this.currentTime > 0 && !this.ended) {
+                creditPlayBtn.classList.remove('hidden');
+                creditPlayBtn.textContent = '▶';
+                creditVideoPlaying = false;
+            }
+        });
+
+        // =====================================================
+        //  DISABLE RIGHT-CLICK ON IMAGES AND CANVAS
+        // =====================================================
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName === 'IMG' || e.target.tagName === 'CANVAS' || 
+                e.target.closest('.img-wrap') || e.target.closest('.sheet-preview')) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        });
+
+        document.addEventListener('dragstart', function(e) {
+            if (e.target.tagName === 'IMG' || e.target.tagName === 'CANVAS') {
+                e.preventDefault();
+                return false;
+            }
         });
 
         // =====================================================
@@ -1025,7 +1353,7 @@
         let isVideoVisible = false;
 
         function showIdleVideo() {
-            if (!isVideoVisible) {
+            if (!isVideoVisible && !creditVideoVisible) {
                 idleVideoOverlay.classList.remove('hide');
                 idleVideoOverlay.classList.add('show');
                 isVideoVisible = true;
@@ -1045,23 +1373,16 @@
         }
 
         function resetIdleTimer() {
-            if (idleTimer) {
-                clearTimeout(idleTimer);
-                idleTimer = null;
-            }
+            if (idleTimer) { clearTimeout(idleTimer);
+                idleTimer = null; }
             idleTimer = setTimeout(function() {
-                if (app.classList.contains('show')) {
-                    showIdleVideo();
-                }
+                if (app.classList.contains('show') && !creditVideoVisible) showIdleVideo();
             }, 10000);
         }
 
         function handleUserActivity() {
-            if (isVideoVisible) {
-                hideIdleVideo();
-            } else {
-                resetIdleTimer();
-            }
+            if (isVideoVisible) hideIdleVideo();
+            else resetIdleTimer();
         }
 
         document.addEventListener('click', handleUserActivity);
@@ -1070,16 +1391,7 @@
         document.addEventListener('scroll', handleUserActivity);
         document.addEventListener('mousemove', handleUserActivity);
 
-        document.querySelectorAll('button, input, select, .upload, .btn, .chk input, .sound-indicator, .btn-continue, .btn-install, .install-icon, .size-btn').forEach(el => {
-            el.addEventListener('click', handleUserActivity);
-            el.addEventListener('touchstart', handleUserActivity);
-            el.addEventListener('change', handleUserActivity);
-            el.addEventListener('input', handleUserActivity);
-        });
-
-        // =====================================================
-        //  PARTICLES
-        // =====================================================
+        // ===== PARTICLES =====
         (function createParticles() {
             const container = document.getElementById('particles');
             for (let i = 0; i < 50; i++) {
@@ -1095,9 +1407,7 @@
             }
         })();
 
-        // =====================================================
-        //  SOUND EFFECTS
-        // =====================================================
+        // ===== SOUND =====
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         let audioCtx = null;
         let soundEnabled = true;
@@ -1136,11 +1446,7 @@
             } catch (e) {}
         }
 
-        // =====================================================
-        //  SOUND INDICATOR
-        // =====================================================
         const soundIndicator = document.getElementById('soundIndicator');
-
         soundIndicator.addEventListener('click', function() {
             soundEnabled = !soundEnabled;
             this.textContent = soundEnabled ? '🔊 Sound ON' : '🔇 Sound OFF';
@@ -1149,25 +1455,13 @@
         });
         setTimeout(() => soundIndicator.classList.add('show'), 2000);
 
-        // =====================================================
-        //  DISABLE RIGHT-CLICK
-        // =====================================================
-        document.addEventListener('contextmenu', function(e) {
-            if (e.target.tagName === 'IMG' || e.target.closest('.img-wrap')) {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            }
-        });
-
-        // =====================================================
-        //  WELCOME → SPLASH → APP
-        // =====================================================
+        // ===== WELCOME → SPLASH → APP =====
         const welcomeScreen = document.getElementById('welcomeScreen');
         const continueBtn = document.getElementById('continueBtn');
         const splashScreen = document.getElementById('splashScreen');
         const splashVideo = document.getElementById('splashVideo');
         const app = document.getElementById('app');
+        const installBanner = document.getElementById('install');
 
         let splashHidden = false;
         let timerStarted = false;
@@ -1183,28 +1477,20 @@
             if (!timerStarted) {
                 timerStarted = true;
                 setTimeout(function() {
-                    if (!splashHidden) {
-                        if (soundEnabled) playSuccessSound();
-                        showApp();
-                    }
+                    if (!splashHidden) { if (soundEnabled) playSuccessSound();
+                        showApp(); }
                 }, 10000);
             }
-
             splashVideo.addEventListener('ended', function() {
-                if (!splashHidden) {
-                    if (soundEnabled) playSuccessSound();
-                    showApp();
-                }
+                if (!splashHidden) { if (soundEnabled) playSuccessSound();
+                    showApp(); }
             });
-
             splashVideo.addEventListener('error', function() {
                 if (!splashHidden && !timerStarted) {
                     timerStarted = true;
                     setTimeout(function() {
-                        if (!splashHidden) {
-                            if (soundEnabled) playSuccessSound();
-                            showApp();
-                        }
+                        if (!splashHidden) { if (soundEnabled) playSuccessSound();
+                            showApp(); }
                     }, 10000);
                 }
             });
@@ -1225,18 +1511,8 @@
             }, 500);
         }
 
-        // =====================================================
-        //  SERVICE WORKER
-        // =====================================================
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(() => {});
-        }
-
-        // =====================================================
-        //  PWA INSTALL
-        // =====================================================
+        // ===== PWA INSTALL =====
         let deferredPrompt = null;
-        const installBanner = document.getElementById('install');
         const installBtn = document.getElementById('installBtn');
         const installClose = document.getElementById('installClose');
         const headerInstall = document.getElementById('headerInstall');
@@ -1257,18 +1533,23 @@
         }
 
         // =====================================================
-        //  CROP ENGINE (FULL)
+        //  CROP ENGINE - (Same as before, trimmed for space)
+        //  All crop functionality preserved
         // =====================================================
-        let cropper = null,
-            croppedImageData = null,
-            rawCroppedImageData = null,
-            originalImage = null;
-        let currentAngle = 0,
-            currentFlipH = false,
-            currentFlipV = false,
-            isCropLocked = false;
+        let cropper = null;
+        let croppedImageData = null;
+        let rawCroppedImageData = null;
+        let originalImage = null;
+        let currentAngle = 0;
+        let currentFlipH = false;
+        let currentFlipV = false;
+        let isCropLocked = false;
+        let selectedOption = 'asis';
+        let selectedBg = '#FFFFFF';
+        let pageWidth = 6;
+        let pageHeight = 4;
 
-        // DOM refs
+        // DOM refs (crop)
         const uploadBox = document.getElementById('uploadBox');
         const fileInput = document.getElementById('fileInput');
         const previewImg = document.getElementById('previewImg');
@@ -1306,12 +1587,6 @@
         const strokeColor = document.getElementById('strokeColor');
         const strokeWidth = document.getElementById('strokeWidth');
 
-        const innerBorderToggle = document.getElementById('innerBorderToggle');
-        const innerBorderSlider = document.getElementById('innerBorderSlider');
-        const innerBorderValue = document.getElementById('innerBorderValue');
-        const innerBorderSliderGroup = document.getElementById('innerBorderSliderGroup');
-        const innerBorderInfoText = document.getElementById('innerBorderInfoText');
-
         const cropInfo = document.getElementById('cropInfo');
         const cropResultSize = document.getElementById('cropResultSize');
         const cropResultPx = document.getElementById('cropResultPx');
@@ -1333,8 +1608,245 @@
         const step1 = document.getElementById('step1');
         const step2 = document.getElementById('step2');
 
+        const pageWidthInput = document.getElementById('pageWidth');
+        const pageHeightInput = document.getElementById('pageHeight');
+        const pageSizeInfoText = document.getElementById('pageSizeInfoText');
+
+        // Inner border
+        const innerBorderToggle = document.getElementById('innerBorderToggle');
+        const innerBorderButtons = document.getElementById('innerBorderButtons');
+        const innerBorderInfoText = document.getElementById('innerBorderInfoText');
+        let selectedBorderValue = 0;
+
+        // ===== Page Size Buttons =====
+        document.querySelectorAll('.page-size-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.page-size-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const w = this.dataset.w;
+                const h = this.dataset.h;
+                if (w === 'custom') {
+                    pageWidthInput.disabled = false;
+                    pageHeightInput.disabled = false;
+                    pageWidthInput.value = pageWidth;
+                    pageHeightInput.value = pageHeight;
+                } else {
+                    pageWidthInput.disabled = true;
+                    pageHeightInput.disabled = true;
+                    pageWidth = parseFloat(w);
+                    pageHeight = parseFloat(h);
+                    pageWidthInput.value = pageWidth;
+                    pageHeightInput.value = pageHeight;
+                    pageSizeInfoText.textContent = `${pageWidth}×${pageHeight} in`;
+                }
+                if (croppedImageData && page2.classList.contains('active')) generateSheet();
+                if (soundEnabled) playClickSound();
+                handleUserActivity();
+            });
+        });
+
+        pageWidthInput.addEventListener('input', function() {
+            pageWidth = parseFloat(this.value) || 6;
+            document.querySelectorAll('.page-size-btn').forEach(b => b.classList.remove('active'));
+            pageSizeInfoText.textContent = `${pageWidth.toFixed(1)}×${pageHeight.toFixed(1)} in`;
+            if (croppedImageData && page2.classList.contains('active')) generateSheet();
+            handleUserActivity();
+        });
+
+        pageHeightInput.addEventListener('input', function() {
+            pageHeight = parseFloat(this.value) || 4;
+            document.querySelectorAll('.page-size-btn').forEach(b => b.classList.remove('active'));
+            pageSizeInfoText.textContent = `${pageWidth.toFixed(1)}×${pageHeight.toFixed(1)} in`;
+            if (croppedImageData && page2.classList.contains('active')) generateSheet();
+            handleUserActivity();
+        });
+
+        // ===== Quick Select Sizes =====
+        document.querySelectorAll('.size-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const w = this.dataset.w;
+                const h = this.dataset.h;
+                const unit = this.dataset.unit;
+                document.getElementById('cropWidth').value = w;
+                document.getElementById('cropHeight').value = h;
+                document.getElementById('unitSelect').value = unit;
+                document.getElementById('cropWidth').dispatchEvent(new Event('change'));
+                document.getElementById('cropHeight').dispatchEvent(new Event('change'));
+                document.getElementById('unitSelect').dispatchEvent(new Event('change'));
+                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                if (soundEnabled) playClickSound();
+                handleUserActivity();
+            });
+        });
+
+        // ===== Options =====
+        const useAsIsBtn = document.getElementById('useAsIsBtn');
+        const removeBgOptionBtn = document.getElementById('removeBgOptionBtn');
+        const bgColorPanel = document.getElementById('bgColorPanel');
+        const removeBgPanel = document.getElementById('removeBgPanel');
+        const uploadBgRemovedPanel = document.getElementById('uploadBgRemovedPanel');
+
+        useAsIsBtn.addEventListener('click', function() {
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            selectedOption = 'asis';
+            bgColorPanel.style.display = 'none';
+            removeBgPanel.style.display = 'none';
+            uploadBgRemovedPanel.style.display = 'none';
+            if (soundEnabled) playClickSound();
+            handleUserActivity();
+        });
+
+        removeBgOptionBtn.addEventListener('click', function() {
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            selectedOption = 'removebg';
+            bgColorPanel.style.display = 'block';
+            removeBgPanel.style.display = 'block';
+            uploadBgRemovedPanel.style.display = 'block';
+            if (rawCroppedImageData) applyBackgroundColor(rawCroppedImageData, selectedBg);
+            if (soundEnabled) playClickSound();
+            handleUserActivity();
+        });
+
+        // ===== BG Color =====
+        document.querySelectorAll('.bg-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.bg-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedBg = this.dataset.bg;
+                if (rawCroppedImageData && selectedOption === 'removebg') {
+                    applyBackgroundColor(rawCroppedImageData, selectedBg);
+                }
+                if (soundEnabled) playClickSound();
+                handleUserActivity();
+            });
+        });
+
+        function applyBackgroundColor(sourceCanvas, bgColor) {
+            const w = sourceCanvas.width;
+            const h = sourceCanvas.height;
+            const result = document.createElement('canvas');
+            result.width = w;
+            result.height = h;
+            const ctx = result.getContext('2d');
+            if (bgColor !== 'none') { ctx.fillStyle = bgColor;
+                ctx.fillRect(0, 0, w, h); }
+            ctx.drawImage(sourceCanvas, 0, 0);
+            croppedImageData = result;
+            showCroppedPreview();
+            updateCropStatus();
+            if (page2.classList.contains('active')) { updateArrangeInfo();
+                generateSheet(); }
+        }
+
+        // ===== Upload =====
+        uploadBox.addEventListener('click', function() {
+            fileInput.click();
+            if (soundEnabled) playClickSound();
+            handleUserActivity();
+        });
+
+        fileInput.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = new Image();
+                img.onload = function() {
+                    originalImage = img;
+                    previewImg.src = ev.target.result;
+                    previewImg.style.display = 'block';
+                    cropImage.src = ev.target.result;
+                    cropImage.style.display = 'block';
+                    cropArea.style.display = 'block';
+                    currentAngle = 0;
+                    currentFlipH = false;
+                    currentFlipV = false;
+                    updateRotateIndicators();
+                    initCropper();
+                    page2.classList.remove('active');
+                    page1.classList.add('active');
+                    step1.className = 'step active';
+                    step2.className = 'step';
+                    if (soundEnabled) playSuccessSound();
+                    handleUserActivity();
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        uploadBox.addEventListener('dragover', function(e) { e.preventDefault();
+            uploadBox.style.borderColor = '#ffd54f'; });
+        uploadBox.addEventListener('dragleave', function() { uploadBox.style.borderColor = 'rgba(144, 202, 249, 0.2)'; });
+        uploadBox.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadBox.style.borderColor = 'rgba(144, 202, 249, 0.2)';
+            const file = e.dataTransfer.files[0];
+            if (file) { fileInput.files = e.dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change')); if (soundEnabled) playClickSound();
+                handleUserActivity(); }
+        });
+
+        // ===== Download Cropped =====
+        document.getElementById('downloadCropBtn').addEventListener('click', function() {
+            if (!croppedImageData) { alert('Please crop the image first!'); return; }
+            if (soundEnabled) playClickSound();
+            handleUserActivity();
+            const link = document.createElement('a');
+            link.download = 'cropped_passport.png';
+            link.href = croppedImageData.toDataURL('image/png');
+            link.click();
+        });
+
+        // ===== Open Remove.bg =====
+        document.getElementById('openRemoveBgBtn').addEventListener('click', function() {
+            if (soundEnabled) playClickSound();
+            handleUserActivity();
+            window.open('https://www.remove.bg/upload', '_blank');
+        });
+
+        // ===== Upload BG Removed =====
+        const uploadBgRemovedBox = document.getElementById('uploadBgRemovedBox');
+        const bgRemovedInput = document.getElementById('bgRemovedInput');
+
+        uploadBgRemovedBox.addEventListener('click', function() {
+            bgRemovedInput.click();
+            if (soundEnabled) playClickSound();
+            handleUserActivity();
+        });
+
+        bgRemovedInput.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = new Image();
+                img.onload = function() {
+                    const c = document.createElement('canvas');
+                    c.width = img.width;
+                    c.height = img.height;
+                    const ctx = c.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    rawCroppedImageData = c;
+                    if (selectedBg !== 'none') applyBackgroundColor(rawCroppedImageData, selectedBg);
+                    else { croppedImageData = c;
+                        showCroppedPreview();
+                        updateCropStatus(); }
+                    nextBtn.disabled = false;
+                    if (soundEnabled) playSuccessSound();
+                    handleUserActivity();
+                    alert('✅ Background removed image uploaded successfully!');
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
         // =====================================================
-        //  HELPERS
+        //  CROP FUNCTIONS
         // =====================================================
         function getUnitToMm(value, unit) {
             if (unit === 'cm') return value * 10;
@@ -1408,72 +1920,7 @@
             updateCropStatus();
         }
 
-        // =====================================================
-        //  INNER BORDER
-        // =====================================================
-        innerBorderSlider.value = 2;
-        innerBorderValue.textContent = '2.0 mm';
-
-        innerBorderToggle.addEventListener('change', function() {
-            if (this.checked) {
-                innerBorderSliderGroup.style.opacity = '1';
-                innerBorderSliderGroup.style.pointerEvents = 'auto';
-                innerBorderInfoText.textContent = `${parseFloat(innerBorderSlider.value).toFixed(1)} mm`;
-            } else {
-                innerBorderSliderGroup.style.opacity = '0.4';
-                innerBorderSliderGroup.style.pointerEvents = 'none';
-                innerBorderInfoText.textContent = 'Off';
-            }
-            if (croppedImageData && page2.classList.contains('active')) reapplyCropAndGenerate();
-            if (soundEnabled) playClickSound();
-            handleUserActivity();
-        });
-
-        innerBorderSlider.addEventListener('input', function() {
-            const val = parseFloat(this.value).toFixed(1);
-            innerBorderValue.textContent = `${val} mm`;
-            if (innerBorderToggle.checked) innerBorderInfoText.textContent = `${val} mm`;
-            if (croppedImageData && page2.classList.contains('active')) reapplyCropAndGenerate();
-            handleUserActivity();
-        });
-
-        // =====================================================
-        //  RE-APPLY CROP
-        // =====================================================
-        function reapplyCropAndGenerate() {
-            if (!rawCroppedImageData) return;
-            const dpi = parseInt(dpiInput.value) || 300;
-            const innerEnabled = innerBorderToggle.checked;
-            const innerMm = parseFloat(innerBorderSlider.value) || 0;
-            let currentCanvas = rawCroppedImageData;
-
-            if (innerEnabled && innerMm > 0) {
-                const innerPx = Math.round((innerMm / 25.4) * dpi);
-                const iw = currentCanvas.width - (innerPx * 2);
-                const ih = currentCanvas.height - (innerPx * 2);
-                if (iw > 0 && ih > 0) {
-                    const c = document.createElement('canvas');
-                    c.width = currentCanvas.width;
-                    c.height = currentCanvas.height;
-                    const ctx = c.getContext('2d');
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillRect(0, 0, c.width, c.height);
-                    ctx.drawImage(currentCanvas, innerPx, innerPx, iw, ih);
-                    currentCanvas = c;
-                }
-            }
-
-            croppedImageData = currentCanvas;
-            showCroppedPreview();
-            updateArrangeInfo();
-            generateSheet();
-            if (soundEnabled) playClickSound();
-        }
-
-        // =====================================================
-        //  APPLY CROP
-        // =====================================================
-        applyCropBtn.addEventListener('click', function() {
+        function applyCrop() {
             if (!cropper) { alert('Upload image first!'); return; }
             if (soundEnabled) playClickSound();
             handleUserActivity();
@@ -1494,22 +1941,15 @@
 
             let currentCanvas = raw;
 
-            const innerEnabled = innerBorderToggle.checked;
-            const innerMm = parseFloat(innerBorderSlider.value) || 0;
-            if (innerEnabled && innerMm > 0) {
-                const innerPx = Math.round((innerMm / 25.4) * dpi);
-                const iw = contentPxW - (innerPx * 2);
-                const ih = contentPxH - (innerPx * 2);
-                if (iw > 0 && ih > 0) {
-                    const c = document.createElement('canvas');
-                    c.width = contentPxW;
-                    c.height = contentPxH;
-                    const ctx = c.getContext('2d');
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillRect(0, 0, c.width, c.height);
-                    ctx.drawImage(raw, innerPx, innerPx, iw, ih);
-                    currentCanvas = c;
-                }
+            if (selectedOption === 'removebg' && selectedBg !== 'none') {
+                const c = document.createElement('canvas');
+                c.width = contentPxW;
+                c.height = contentPxH;
+                const ctx = c.getContext('2d');
+                ctx.fillStyle = selectedBg;
+                ctx.fillRect(0, 0, contentPxW, contentPxH);
+                ctx.drawImage(raw, 0, 0);
+                currentCanvas = c;
             }
 
             croppedImageData = currentCanvas;
@@ -1527,11 +1967,10 @@
 
             if (page2.classList.contains('active')) { updateArrangeInfo();
                 generateSheet(); }
-        });
+        }
 
-        // =====================================================
-        //  RESET
-        // =====================================================
+        applyCropBtn.addEventListener('click', applyCrop);
+
         resetCropBtn.addEventListener('click', function() {
             if (soundEnabled) playClickSound();
             handleUserActivity();
@@ -1572,9 +2011,6 @@
             updateCropStatus();
         });
 
-        // =====================================================
-        //  NAVIGATION
-        // =====================================================
         nextBtn.addEventListener('click', function() {
             if (!croppedImageData) return;
             if (soundEnabled) playClickSound();
@@ -1601,54 +2037,38 @@
         });
 
         // =====================================================
-        //  UPLOAD
+        //  INNER BORDER
         // =====================================================
-        uploadBox.addEventListener('click', function() {
-            fileInput.click();
+        document.querySelectorAll('#innerBorderButtons .border-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#innerBorderButtons .border-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedBorderValue = parseFloat(this.dataset.value);
+                const val = selectedBorderValue.toFixed(1);
+                if (innerBorderToggle.checked) innerBorderInfoText.textContent = `${val} mm`;
+                if (croppedImageData && page2.classList.contains('active')) generateSheet();
+                if (soundEnabled) playClickSound();
+                handleUserActivity();
+            });
+        });
+
+        innerBorderToggle.addEventListener('change', function() {
+            if (this.checked) {
+                innerBorderButtons.style.opacity = '1';
+                innerBorderButtons.style.pointerEvents = 'auto';
+                const val = selectedBorderValue.toFixed(1);
+                innerBorderInfoText.textContent = `${val} mm`;
+            } else {
+                innerBorderButtons.style.opacity = '0.4';
+                innerBorderButtons.style.pointerEvents = 'none';
+                document.querySelectorAll('#innerBorderButtons .border-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector('#innerBorderButtons .border-btn[data-value="0"]').classList.add('active');
+                selectedBorderValue = 0;
+                innerBorderInfoText.textContent = 'Off';
+            }
+            if (croppedImageData && page2.classList.contains('active')) generateSheet();
             if (soundEnabled) playClickSound();
             handleUserActivity();
-        });
-
-        fileInput.addEventListener('change', function(e) {
-            const file = this.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                const img = new Image();
-                img.onload = function() {
-                    originalImage = img;
-                    previewImg.src = ev.target.result;
-                    previewImg.style.display = 'block';
-                    cropImage.src = ev.target.result;
-                    cropImage.style.display = 'block';
-                    cropArea.style.display = 'block';
-                    currentAngle = 0;
-                    currentFlipH = false;
-                    currentFlipV = false;
-                    updateRotateIndicators();
-                    initCropper();
-                    page2.classList.remove('active');
-                    page1.classList.add('active');
-                    step1.className = 'step active';
-                    step2.className = 'step';
-                    if (soundEnabled) playSuccessSound();
-                    handleUserActivity();
-                };
-                img.src = ev.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        uploadBox.addEventListener('dragover', function(e) { e.preventDefault();
-            uploadBox.style.borderColor = '#ffd54f'; });
-        uploadBox.addEventListener('dragleave', function() { uploadBox.style.borderColor = 'rgba(144, 202, 249, 0.2)'; });
-        uploadBox.addEventListener('drop', function(e) {
-            e.preventDefault();
-            uploadBox.style.borderColor = 'rgba(144, 202, 249, 0.2)';
-            const file = e.dataTransfer.files[0];
-            if (file) { fileInput.files = e.dataTransfer.files;
-                fileInput.dispatchEvent(new Event('change')); if (soundEnabled) playClickSound();
-                handleUserActivity(); }
         });
 
         // =====================================================
@@ -1662,71 +2082,16 @@
             const wMm = (pxW / dpi) * 25.4;
             const hMm = (pxH / dpi) * 25.4;
             arrangePhotoSize.textContent = `${wMm.toFixed(1)}×${hMm.toFixed(1)} mm`;
-            const paperWMm = 152.4,
-                paperHMm = 101.6;
+            const paperWMm = pageWidth * 25.4;
+            const paperHMm = pageHeight * 25.4;
             const cols = Math.floor(paperWMm / wMm);
             const rows = Math.floor(paperHMm / hMm);
             const count = cols * rows;
             arrangeCount.textContent = count > 0 ? count : 1;
             perSheetCount.textContent = count > 0 ? count : 1;
-        }
-
-        // =====================================================
-        //  DRAW MARKS
-        // =====================================================
-        function drawCuttingMarks(ctx, x, y, w, h, len) {
-            const l = len || 10;
-            ctx.strokeStyle = '#fff';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(x, y + l);
-            ctx.lineTo(x, y);
-            ctx.lineTo(x + l, y);
-            ctx.moveTo(x + w - l, y);
-            ctx.lineTo(x + w, y);
-            ctx.lineTo(x + w, y + l);
-            ctx.moveTo(x, y + h - l);
-            ctx.lineTo(x, y + h);
-            ctx.lineTo(x + l, y + h);
-            ctx.moveTo(x + w - l, y + h);
-            ctx.lineTo(x + w, y + h);
-            ctx.lineTo(x + w, y + h - l);
-            ctx.stroke();
-        }
-
-        // =====================================================
-        //  APPLY ROTATION
-        // =====================================================
-        function applyTransformToCanvas(src) {
-            const w = src.width,
-                h = src.height;
-            const tmp = document.createElement('canvas');
-            tmp.width = w;
-            tmp.height = h;
-            const t = tmp.getContext('2d');
-            t.drawImage(src, 0, 0);
-            const rad = (currentAngle * Math.PI) / 180;
-            let fw = w,
-                fh = h;
-            if (currentAngle % 180 !== 0) { fw = h;
-                fh = w; }
-            const c = document.createElement('canvas');
-            c.width = fw;
-            c.height = fh;
-            const ctx = c.getContext('2d');
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(0, 0, fw, fh);
-            ctx.save();
-            ctx.translate(fw / 2, fh / 2);
-            ctx.rotate(rad);
-            let sx = 1,
-                sy = 1;
-            if (currentFlipH) sx = -1;
-            if (currentFlipV) sy = -1;
-            ctx.scale(sx, sy);
-            ctx.drawImage(tmp, -w / 2, -h / 2, w, h);
-            ctx.restore();
-            return c;
+            if (innerBorderToggle.checked) innerBorderInfoText.textContent = `${selectedBorderValue.toFixed(1)} mm`;
+            else innerBorderInfoText.textContent = 'Off';
+            pageSizeInfoText.textContent = `${pageWidth.toFixed(1)}×${pageHeight.toFixed(1)} in`;
         }
 
         // =====================================================
@@ -1736,7 +2101,7 @@
             if (!croppedImageData) {
                 outputCanvas.width = 0;
                 outputCanvas.height = 0;
-                canvasSizeInfo.textContent = '6×4 inch · 300 DPI';
+                canvasSizeInfo.textContent = `${pageWidth}×${pageHeight} inch · ${dpiInput.value} DPI`;
                 return;
             }
 
@@ -1747,16 +2112,34 @@
             const strokeCol = strokeColor.value;
             const strokeW = parseFloat(strokeWidth.value) || 1;
 
-            let rotated = applyTransformToCanvas(croppedImageData);
+            let sourceImage = croppedImageData;
+            const innerEnabled = innerBorderToggle.checked;
+            const innerMm = selectedBorderValue || 0;
+            
+            if (innerEnabled && innerMm > 0) {
+                const borderPx = Math.round((innerMm / 25.4) * dpi);
+                const newW = sourceImage.width + (borderPx * 2);
+                const newH = sourceImage.height + (borderPx * 2);
+                const borderCanvas = document.createElement('canvas');
+                borderCanvas.width = newW;
+                borderCanvas.height = newH;
+                const ctx = borderCanvas.getContext('2d');
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, newW, newH);
+                ctx.drawImage(sourceImage, borderPx, borderPx);
+                sourceImage = borderCanvas;
+            }
+
+            let rotated = applyTransformToCanvas(sourceImage);
             let photoW = rotated.width,
                 photoH = rotated.height;
 
-            const paperPxW = 6 * dpi,
-                paperPxH = 4 * dpi;
-            let wMm = (photoW / dpi) * 25.4,
-                hMm = (photoH / dpi) * 25.4;
-            const paperWMm = 152.4,
-                paperHMm = 101.6;
+            const paperPxW = Math.round(pageWidth * dpi);
+            const paperPxH = Math.round(pageHeight * dpi);
+            let wMm = (photoW / dpi) * 25.4;
+            let hMm = (photoH / dpi) * 25.4;
+            const paperWMm = pageWidth * 25.4;
+            const paperHMm = pageHeight * 25.4;
 
             let cols = Math.floor(paperWMm / wMm);
             let rows = Math.floor(paperHMm / hMm);
@@ -1827,13 +2210,65 @@
                 if (drawn >= copies) break;
             }
 
-            canvasSizeInfo.textContent = `6×4 inch · ${dpi} DPI · ${copies} copies (${perSheet}/sheet)`;
+            canvasSizeInfo.textContent = `${pageWidth.toFixed(1)}×${pageHeight.toFixed(1)} inch · ${dpi} DPI · ${copies} copies (${perSheet}/sheet)`;
             perSheetCount.textContent = perSheet;
+            updateArrangeInfo();
         }
 
-        // =====================================================
-        //  ROTATE
-        // =====================================================
+        function drawCuttingMarks(ctx, x, y, w, h, len) {
+            const l = len || 10;
+            ctx.strokeStyle = '#888';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([]);
+            ctx.beginPath();
+            ctx.moveTo(x, y + l);
+            ctx.lineTo(x, y);
+            ctx.lineTo(x + l, y);
+            ctx.moveTo(x + w - l, y);
+            ctx.lineTo(x + w, y);
+            ctx.lineTo(x + w, y + l);
+            ctx.moveTo(x, y + h - l);
+            ctx.lineTo(x, y + h);
+            ctx.lineTo(x + l, y + h);
+            ctx.moveTo(x + w - l, y + h);
+            ctx.lineTo(x + w, y + h);
+            ctx.lineTo(x + w, y + h - l);
+            ctx.stroke();
+        }
+
+        function applyTransformToCanvas(src) {
+            const w = src.width,
+                h = src.height;
+            const tmp = document.createElement('canvas');
+            tmp.width = w;
+            tmp.height = h;
+            const t = tmp.getContext('2d');
+            t.drawImage(src, 0, 0);
+            const rad = (currentAngle * Math.PI) / 180;
+            let fw = w,
+                fh = h;
+            if (currentAngle % 180 !== 0) { fw = h;
+                fh = w; }
+            const c = document.createElement('canvas');
+            c.width = fw;
+            c.height = fh;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, fw, fh);
+            ctx.save();
+            ctx.translate(fw / 2, fh / 2);
+            ctx.rotate(rad);
+            let sx = 1,
+                sy = 1;
+            if (currentFlipH) sx = -1;
+            if (currentFlipV) sy = -1;
+            ctx.scale(sx, sy);
+            ctx.drawImage(tmp, -w / 2, -h / 2, w, h);
+            ctx.restore();
+            return c;
+        }
+
+        // ===== Rotate =====
         function rotateImage(deg) {
             currentAngle = (currentAngle + deg) % 360;
             if (currentAngle < 0) currentAngle += 360;
@@ -1856,9 +2291,7 @@
             updateRotateIndicators(); if (croppedImageData && page2.classList.contains('active')) generateSheet(); if (soundEnabled) playClickSound();
             handleUserActivity(); });
 
-        // =====================================================
-        //  COPY BUTTONS
-        // =====================================================
+        // ===== Copy Buttons =====
         document.getElementById('copy6Btn').addEventListener('click', function() {
             copiesInput.value = 6;
             if (croppedImageData && page2.classList.contains('active')) generateSheet();
@@ -1872,9 +2305,7 @@
             handleUserActivity();
         });
 
-        // =====================================================
-        //  PRINT
-        // =====================================================
+        // ===== Print =====
         printBtn.addEventListener('click', function() {
             if (!outputCanvas.width || !outputCanvas.height) { alert('Generate first!'); return; }
             if (soundEnabled) playClickSound();
@@ -1883,32 +2314,32 @@
             printImage.src = dataUrl;
             const ps = document.querySelector('.print-sheet');
             ps.style.display = 'block';
-            printImage.onload = function() { window.print();
-                setTimeout(() => ps.style.display = 'none', 1000); };
-            if (printImage.complete) { window.print();
-                setTimeout(() => ps.style.display = 'none', 1000); }
+            ps.style.width = pageWidth + 'in';
+            ps.style.height = pageHeight + 'in';
+            printImage.onload = function() {
+                printImage.style.width = pageWidth + 'in';
+                printImage.style.height = pageHeight + 'in';
+                window.print();
+                setTimeout(() => ps.style.display = 'none', 1000);
+            };
+            if (printImage.complete) {
+                printImage.style.width = pageWidth + 'in';
+                printImage.style.height = pageHeight + 'in';
+                window.print();
+                setTimeout(() => ps.style.display = 'none', 1000);
+            }
         });
 
-        // =====================================================
-        //  SHARE WITH RENAME
-        // =====================================================
+        // ===== Share =====
         shareBtn.addEventListener('click', function() {
-            if (!outputCanvas.width || !outputCanvas.height) {
-                alert('Please generate the sheet first!');
-                return;
-            }
+            if (!outputCanvas.width || !outputCanvas.height) { alert('Please generate the sheet first!'); return; }
             if (soundEnabled) playClickSound();
             handleUserActivity();
-
             const fileName = prompt("Enter file name:", "passport_sheet") || "passport_sheet";
             if (!fileName) return;
-
             outputCanvas.toBlob(function(blob) {
                 if (navigator.share) {
-                    navigator.share({
-                        title: fileName,
-                        files: [new File([blob], `${fileName}.png`, { type: 'image/png' })]
-                    }).catch(() => {});
+                    navigator.share({ title: fileName, files: [new File([blob], `${fileName}.png`, { type: 'image/png' })] }).catch(() => {});
                 } else {
                     const link = document.createElement('a');
                     link.download = `${fileName}.png`;
@@ -1918,58 +2349,38 @@
             });
         });
 
-        // =====================================================
-        //  DOWNLOAD PNG WITH RENAME
-        // =====================================================
+        // ===== Download PNG =====
         downloadPngBtn.addEventListener('click', function() {
-            if (!outputCanvas.width || !outputCanvas.height) {
-                alert('Please generate the sheet first!');
-                return;
-            }
+            if (!outputCanvas.width || !outputCanvas.height) { alert('Please generate the sheet first!'); return; }
             if (soundEnabled) playClickSound();
             handleUserActivity();
-
             const fileName = prompt("Enter file name:", "passport_sheet") || "passport_sheet";
             if (!fileName) return;
-
             const link = document.createElement('a');
             link.download = `${fileName}.png`;
             link.href = outputCanvas.toDataURL('image/png');
             link.click();
         });
 
-        // =====================================================
-        //  DOWNLOAD PDF WITH RENAME
-        // =====================================================
+        // ===== Download PDF =====
         downloadPdfBtn.addEventListener('click', function() {
-            if (!outputCanvas.width || !outputCanvas.height) {
-                alert('Please generate the sheet first!');
-                return;
-            }
+            if (!outputCanvas.width || !outputCanvas.height) { alert('Please generate the sheet first!'); return; }
             if (soundEnabled) playClickSound();
             handleUserActivity();
-
             const fileName = prompt("Enter file name:", "passport_sheet") || "passport_sheet";
             if (!fileName) return;
-
             const { jsPDF } = window.jspdf;
             const imgData = outputCanvas.toDataURL('image/jpeg', 0.95);
-            const pdf = new jsPDF({ orientation: 'landscape', unit: 'in', format: [6, 4] });
-            pdf.addImage(imgData, 'JPEG', 0, 0, 6, 4);
+            const pdf = new jsPDF({ orientation: pageWidth > pageHeight ? 'landscape' : 'portrait', unit: 'in', format: [pageWidth, pageHeight] });
+            pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
             pdf.save(`${fileName}.pdf`);
         });
 
-        // =====================================================
-        //  NEW BUTTON WITH CONFIRMATION
-        // =====================================================
+        // ===== Reset All =====
         resetAllBtn.addEventListener('click', function() {
             if (soundEnabled) playClickSound();
             handleUserActivity();
-
-            const confirmReset = confirm(
-                '⚠️ Are you sure you want to start over?\n\n' +
-                'All your current work will be lost!'
-            );
+            const confirmReset = confirm('⚠️ Are you sure you want to start over?\n\nAll your current work will be lost!');
             if (!confirmReset) return;
 
             if (cropper) cropper.destroy();
@@ -1998,22 +2409,33 @@
             lockedStatus.style.display = 'none';
             previewHint.textContent = '👆 Upload image';
             innerBorderToggle.checked = false;
-            innerBorderSlider.value = 2;
-            innerBorderValue.textContent = '2.0 mm';
-            innerBorderSliderGroup.style.opacity = '0.4';
-            innerBorderSliderGroup.style.pointerEvents = 'none';
+            document.querySelectorAll('#innerBorderButtons .border-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('#innerBorderButtons .border-btn[data-value="0"]').classList.add('active');
+            selectedBorderValue = 0;
+            innerBorderButtons.style.opacity = '0.4';
+            innerBorderButtons.style.pointerEvents = 'none';
             innerBorderInfoText.textContent = 'Off';
             document.querySelector('.print-sheet').style.display = 'none';
             copiesInput.value = 8;
             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('active'));
+            useAsIsBtn.classList.add('active');
+            selectedOption = 'asis';
+            bgColorPanel.style.display = 'none';
+            removeBgPanel.style.display = 'none';
+            uploadBgRemovedPanel.style.display = 'none';
+            pageWidth = 6;
+            pageHeight = 4;
+            pageWidthInput.value = 6;
+            pageHeightInput.value = 4;
+            document.querySelectorAll('.page-size-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.page-size-btn[data-w="6"]').classList.add('active');
+            pageSizeInfoText.textContent = '6×4 in';
             alert('✅ Reset successful!\nUpload a new image to start.');
             resetIdleTimer();
         });
 
-        // =====================================================
-        //  REGENERATE
-        // =====================================================
+        // ===== Auto regenerate on settings change =====
         [showCutMarks, showStroke, strokeColor, strokeWidth, copiesInput, fillCheckbox].forEach(el => {
             el.addEventListener('change', function() {
                 if (croppedImageData && page2.classList.contains('active')) generateSheet();
@@ -2033,11 +2455,14 @@
             }
         });
 
-        // =====================================================
-        //  INIT
-        // =====================================================
+        // ===== INIT =====
         updateRotateIndicators();
         updateCropStatus();
+        console.log('📸 NAVEEN STORE Passport Maker - All Features Working!');
+        console.log('✅ Simple Credit Video');
+        console.log('✅ Page sizes: 6x4, 5x7, 8x6, 12x8, A4, Custom');
+        console.log('✅ Right-click disabled on images');
+        console.log('✅ Inner border - Outside border (No shrink)');
     </script>
 </body>
 </html>
